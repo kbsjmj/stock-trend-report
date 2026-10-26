@@ -22,7 +22,11 @@ def kiwoom_try(idx, k, s):
                           json={"grant_type": "client_credentials", "appkey": k, "secretkey": s})
         d = r.json() if r.headers.get("content-type", "").startswith("application/json") else {}
         ok = bool(d.get("token"))
-        line(f"키움 쌍 {idx} 토큰 발급", ok, f"HTTP {r.status_code}")
+        diag = ""
+        if not ok:
+            # 값은 출력하지 않고 키움 응답 코드·메시지와 입력 길이(공백 여부 확인용)만 출력한다.
+            diag = f"return_code={d.get('return_code')} return_msg={d.get('return_msg')} key_len={len(k)} secret_len={len(s)} key_has_space={' ' in k or k != k.strip()}"
+        line(f"키움 쌍 {idx} 토큰 발급", ok, f"HTTP {r.status_code} {diag}")
         if ok:
             h = {"Content-Type": "application/json;charset=UTF-8",
                  "authorization": f"Bearer {d['token']}", "api-id": "ka20006"}
