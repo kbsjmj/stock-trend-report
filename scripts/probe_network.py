@@ -58,6 +58,18 @@ try:
 except Exception as e:
     line("KRX pykrx", False, type(e).__name__)
 
+# 3-1) KRX 지수 일봉 (코스피 1001, 코스닥 2001) — 키움 대체 후보
+try:
+    from pykrx import stock
+    end = dt.date.today().strftime("%Y%m%d")
+    start = (dt.date.today() - dt.timedelta(days=100)).strftime("%Y%m%d")
+    idf = stock.get_index_ohlcv_by_date(start, end, "1001")
+    line("KRX pykrx 코스피 지수 일봉", len(idf) > 1, f"행 {len(idf)}, 최근종가 {float(idf['종가'].iloc[-1]) if len(idf) else '-'}")
+    idf2 = stock.get_index_ohlcv_by_date(start, end, "2001")
+    line("KRX pykrx 코스닥 지수 일봉", len(idf2) > 1, f"행 {len(idf2)}, 최근종가 {float(idf2['종가'].iloc[-1]) if len(idf2) else '-'}")
+except Exception as e:
+    line("KRX pykrx 지수 일봉", False, type(e).__name__)
+
 # 4) Google Drive (토큰 갱신 + 목록 1건)
 try:
     sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
