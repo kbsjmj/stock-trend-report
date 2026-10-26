@@ -70,8 +70,6 @@ jobs:
 
       - name: 파이프라인 실행
         env:
-          KIWOOM_APP_KEY: ${{ secrets.KIWOOM_APP_KEY }}
-          KIWOOM_APP_SECRET: ${{ secrets.KIWOOM_APP_SECRET }}
           KRX_ID: ${{ secrets.KRX_ID }}
           KRX_PW: ${{ secrets.KRX_PW }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}

@@ -16,8 +16,8 @@ echo "[run_pipeline] 기준일=$DATE 작성일=$WRITE 전일=$PREV"
 echo "[1/5] 미국 데이터 (Yahoo Finance)"
 python3 build_report.py "$DATE"
 
-echo "[1-1/5] 국내 지수 (키움 REST ka20006)"
-python3 build_kiwoom_domestic.py "$DATE"
+echo "[1-1/5] 국내 지수 (KRX pykrx)"
+python3 build_krx_domestic.py "$DATE"
 
 echo "[2/5] KRX 수급·시세 (pykrx)"
 python3 build_krx.py "$DATE"
