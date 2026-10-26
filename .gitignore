@@ -1,0 +1,8 @@
+.env
+scripts/secrets/
+scripts/__pycache__/
+scripts/*.json
+scripts/*.html
+scripts/*.png
+scripts/*.pdf
+out/

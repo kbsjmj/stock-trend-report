@@ -1,0 +1,28 @@
+name: network-probe
+# Phase 1 스파이크: 러너에서 키움·KRX·Yahoo·Drive 연결 확인. 수동 실행만.
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - name: Drive 인증 파일 준비
+        env:
+          GDRIVE_CREDENTIALS_JSON: ${{ secrets.GDRIVE_CREDENTIALS_JSON }}
+          GDRIVE_TOKEN_JSON: ${{ secrets.GDRIVE_TOKEN_JSON }}
+        run: |
+          mkdir -p scripts/secrets
+          printf '%s' "$GDRIVE_CREDENTIALS_JSON" > scripts/secrets/credentials.json
+          printf '%s' "$GDRIVE_TOKEN_JSON" > scripts/secrets/token.json
+      - name: 연결 점검
+        env:
+          KIWOOM_PAIRS: ${{ secrets.KIWOOM_PAIRS }}   # JSON [["key","secret"],...] 3쌍
+          KRX_ID: ${{ secrets.KRX_ID }}
+          KRX_PW: ${{ secrets.KRX_PW }}
+        run: python3 scripts/probe_network.py
