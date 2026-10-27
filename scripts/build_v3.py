@@ -192,7 +192,28 @@ us_top_pct = sorted(us_valid, key=lambda x: x[1]['pct'], reverse=True)[:10]
 us_top_turn = sorted(us_valid, key=lambda x: x[1]['turnover_est'], reverse=True)[:10]
 us_pct_tbl = ''.join(f'<tr><td>{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_pct, 1))
 us_turn_tbl = ''.join(f'<tr><td>{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_turn, 1))
-us_watch_tbl = ''.join(us_tr(t, r) for t, r in us_valid)
+# 5-4 미국 관심 종목: 테마별 묶음(테마 순서 = 테마 내 거래대금 합계 큰 순), 짝수 번째 테마 행 옅은 회색
+US_THEME_OF = {
+    'BigTech': ['AAPL', 'NVDA', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'SPCX'],
+    '반도체': ['SOXX', 'TSM', 'ASML', 'SNDK', 'AVGO', 'MU'],
+    'AI': ['PLTR'],
+    '로봇': ['BOTZ', 'ISRG', 'TER', 'AVAV', 'ABRA', 'PATH'],
+    '2차전지': ['LIT', 'ALB', 'QS', 'LAC'],
+    '우주항공': ['ASTS', 'FLV', 'LUNR', 'RKLB'],
+    '원자력': ['URA', 'CEG', 'OKLO', 'SMR'],
+    '태양광': ['TAN', 'FSLR', 'NEE', 'ENPH'],
+    '양자컴퓨터': ['IBM', 'BAH', 'IONQ', 'RGTI'],
+}
+_th_of = {t: th for th, ts in US_THEME_OF.items() for t in ts}
+_groups = {}
+for _t, _r in us_valid:
+    _groups.setdefault(_th_of.get(_t, '기타'), []).append((_t, _r))
+_order = sorted(_groups, key=lambda th: sum(r['turnover_est'] for _, r in _groups[th]), reverse=True)
+us_watch_tbl = ''
+for _gi, _th in enumerate(_order):
+    _bg = ' style="background:#f1f2f4"' if _gi % 2 == 1 else ''
+    for _t, _r in _groups[_th]:
+        us_watch_tbl += f'<tr{_bg}><td class="l">{_th}</td>' + us_tr(_t, _r)[4:]
 
 # 국내 테마 표
 kr_theme_tbl = ''
@@ -212,9 +233,11 @@ for i, (code, r) in enumerate(top_turn.iterrows(), 1):
                     f'<td>{int(r["저가"]):,}</td><td>{r["거래대금억"]:,.0f}</td><td>{n_(r["외국인"])}</td><td>{n_(r["기관"])}</td></tr>')
 
 kr_watch_tbl = ''
-for th, names in KR_THEMES.items():
+for _gi, (th, names) in enumerate(KR_THEMES.items()):
+    _bg = ' style="background:#f1f2f4"' if _gi % 2 == 1 else ''
     for n in names:
-        kr_watch_tbl += kr_tr(kr_rows[n], theme=th)
+        _row = kr_tr(kr_rows[n], theme=th)
+        kr_watch_tbl += _row.replace('<tr>', f'<tr{_bg}>', 1) if _bg else _row
 
 us_tbl_nodata = [t for t, r in US.items() if not r]
 

@@ -101,7 +101,7 @@ BODY = f'''
 {tbl('<th>순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_turn_tbl)}
 </div>
 <h3>5-4. 미국 주요 관심 종목</h3>
-{tbl('<th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_watch_tbl)}
+{tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_watch_tbl)}
 <p class="note">정정: SK하이닉스(ADM)는 미국 상장 종목이 아니므로 국내 목록(6-4)에 넣었습니다. SNR(뉴스케일)은 티커가 SMR이어서 SMR로 표기했습니다. ABRA(지브라테크놀로지스)는 데이터가 없어 제외했습니다. SPCX(스페이스X)는 데이터가 조회되지만 상장 여부를 한 번 더 확인해야 합니다. TSMC는 티커 TSM으로 표기했습니다.</p>
 
 <div class="keep">

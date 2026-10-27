@@ -50,6 +50,9 @@ PDF_NAME="증시추세분석 (${WRITE})_v${VER}.pdf"
   --no-pdf-header-footer --print-to-pdf="$ROOT/out/$PDF_NAME" \
   "file://$(pwd)/$HTML"
 
+mkdir -p "$ROOT/reports"
+cp "$HTML" "$ROOT/reports/${PDF_NAME%.pdf}.html"
+
 echo "[5/5] Google Drive 업로드"
 UP_OUT=$(python3 upload_pdf.py --file "$ROOT/out/$PDF_NAME" --title "$PDF_NAME" \
   --folder-id "${GDRIVE_FOLDER_ID:?GDRIVE_FOLDER_ID 필요}" --public)
