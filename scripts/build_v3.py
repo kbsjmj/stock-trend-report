@@ -236,8 +236,10 @@ kr_watch_tbl = ''
 for _gi, (th, names) in enumerate(KR_THEMES.items()):
     _bg = ' style="background:#f1f2f4"' if _gi % 2 == 1 else ''
     for n in names:
-        _row = kr_tr(kr_rows[n], theme=th)
-        kr_watch_tbl += _row.replace('<tr>', f'<tr{_bg}>', 1) if _bg else _row
+        _r = kr_rows[n]
+        kr_watch_tbl += (f'<tr{_bg}><td class="l">{th}</td><td class="l">{_r["name"]} <span class="tk">{_r["code"]}</span></td>'
+                         f'<td>{_r["close"]:,}</td><td>{pct(_r["pct"])}</td><td>{_r["high"]:,}</td><td>{_r["open"]:,}</td>'
+                         f'<td>{_r["low"]:,}</td><td>{_r["turn"]:,.0f}</td><td>{n_(_r["foreign"])}</td><td>{n_(_r["inst"])}</td></tr>')
 
 us_tbl_nodata = [t for t, r in US.items() if not r]
 

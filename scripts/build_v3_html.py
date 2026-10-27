@@ -116,7 +116,7 @@ BODY = f'''
 {tbl('<th>순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_turn_tbl)}
 </div>
 <h3>6-4. 국내 주요 관심 종목</h3>
-{tbl('<th class="l">종목명</th><th class="l">테마</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_watch_tbl)}
+{tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_watch_tbl)}
 <p class="note">정정: "레이보우로보틱스"는 "레인보우로보틱스", "알테오진"은 "알테오젠", "지투바이오"는 KRX 등록명 "지투지바이오"(456160)로 표기했습니다. 스피어(347700)는 코스닥 등록명 그대로입니다.</p>
 
 <div class="keep">
