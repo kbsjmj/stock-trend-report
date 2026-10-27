@@ -14,7 +14,7 @@ on:
         default: '20261023'
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   fetch:
@@ -38,7 +38,14 @@ jobs:
           KRX_PW: ${{ secrets.KRX_PW }}
         run: python3 scripts/fetch_kr_watch.py "${{ github.event.inputs.date }}" "${{ github.event.inputs.prev }}"
 
-      - uses: actions/upload-artifact@v4
-        with:
-          name: kr_watch
-          path: scripts/kr_watch_*.json
+      - name: 결과를 전용 브랜치(kr-watch-data)에 저장 (main 미사용)
+        env:
+          DATE: ${{ github.event.inputs.date }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          F="scripts/kr_watch_${DATE}.json"
+          BLOB=$(git hash-object -w "$F")
+          TREE=$(printf "100644 blob %s\tkr_watch.json\n" "$BLOB" | git mktree)
+          C=$(git commit-tree "$TREE" -m "kr watch ${DATE}")
+          git push -f origin "$C:refs/heads/kr-watch-data"
