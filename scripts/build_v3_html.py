@@ -41,7 +41,7 @@ if not os.path.exists(_NARR_PATH):
 _N = _json.load(open(_NARR_PATH, encoding='utf-8'))
 def _ul(items):
     return '<ul>' + ''.join(f'<li>{_html.escape(x)}</li>' for x in items) + '</ul>'
-US_HTML = _ul([f'[미국 데이터 시점] 미국 {_fmt_md(DATE)} 정규장은 한국 시간 {_fmt_md(WRITE_DATE)} 새벽에 마감합니다. 이 보고서의 미국 지수 값은 {_fmt_md(DATE)} 종가 기준입니다.'] + _N['us'])
+US_HTML = _ul(_N['us'])
 KR_HTML = _ul(_N['kr'])
 
 BODY = f'''
