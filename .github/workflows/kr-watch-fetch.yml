@@ -1,0 +1,44 @@
+name: kr-watch-fetch
+
+# 6-4 국내 주요 관심 종목용 일회성 조회 (수동 실행)
+on:
+  workflow_dispatch:
+    inputs:
+      date:
+        description: '기준일 YYYYMMDD'
+        required: true
+        default: '20261026'
+      prev:
+        description: '직전 거래일 YYYYMMDD'
+        required: true
+        default: '20261023'
+
+permissions:
+  contents: read
+
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Python 패키지 설치
+        run: pip install -r requirements.txt
+
+      - name: 전 종목 시세·수급 조회
+        env:
+          KRX_ID: ${{ secrets.KRX_ID }}
+          KRX_PW: ${{ secrets.KRX_PW }}
+        run: python3 scripts/fetch_kr_watch.py "${{ github.event.inputs.date }}" "${{ github.event.inputs.prev }}"
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: kr_watch
+          path: scripts/kr_watch_*.json
