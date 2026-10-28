@@ -79,3 +79,34 @@ try:
     line("Google Drive 인증·목록", True)
 except Exception as e:
     line("Google Drive", False, type(e).__name__)
+
+# 4-1) 이 OAuth 토큰이 실제로 어느 계정으로 인증됐는지 확인한다 (GDRIVE_FOLDER_ID 문제 진단용).
+try:
+    from upload_pdf import get_service
+    svc = get_service()
+    about = svc.about().get(fields="user(emailAddress,displayName)").execute()
+    u = about.get("user", {})
+    line("Google Drive 인증 계정", True, f"email={u.get('emailAddress')} name={u.get('displayName')}")
+except Exception as e:
+    line("Google Drive 인증 계정", False, f"{type(e).__name__}: {e}")
+
+# 4-2) GDRIVE_FOLDER_ID가 가리키는 대상이 실제로 조회되는지 확인한다.
+#      id 값 자체는 출력하지 않는다(GitHub가 secret과 일치하면 자동으로 ***로 가린다).
+folder_id = os.environ.get("GDRIVE_FOLDER_ID")
+if not folder_id:
+    line("GDRIVE_FOLDER_ID 조회", False, "secret 미설정 또는 미전달")
+else:
+    try:
+        from upload_pdf import get_service
+        svc = get_service()
+        meta = svc.files().get(
+            fileId=folder_id,
+            fields="name,mimeType,trashed,parents,ownedByMe,shared,capabilities(canAddChildren,canEdit)",
+            supportsAllDrives=True,
+        ).execute()
+        line("GDRIVE_FOLDER_ID 조회", True,
+             f"name={meta.get('name')} mimeType={meta.get('mimeType')} trashed={meta.get('trashed')} "
+             f"ownedByMe={meta.get('ownedByMe')} shared={meta.get('shared')} "
+             f"canAddChildren={meta.get('capabilities', {}).get('canAddChildren')}")
+    except Exception as e:
+        line("GDRIVE_FOLDER_ID 조회", False, f"{type(e).__name__}: {e}")
