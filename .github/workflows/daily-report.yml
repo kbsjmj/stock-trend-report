@@ -2,7 +2,8 @@ name: daily-report
 
 on:
   schedule:
-    - cron: '0 22 * * 0-4'        # KST 월~금 07:00 (UTC 일~목 22:00). GitHub 예약은 수십 분 지연될 수 있음
+    - cron: '23 22 * * 0-4'       # KST 월~금 07:23 (UTC 일~목 22:23). 정각은 부하가 몰려 누락·지연이 잦아 :23로 이동
+    - cron: '13 23 * * 0-4'       # 백업: 1차 실행이 빠지면 KST 08:13에 한 번 더. 이미 발행된 날짜는 스크립트가 건너뜀
   push:
     branches: [main]
     paths: ['narrative/*.json']    # Claude가 1절 원인 문구를 올리면 발행 단계 실행
