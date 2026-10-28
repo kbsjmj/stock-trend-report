@@ -22,9 +22,17 @@ import os
 WORK = os.path.dirname(os.path.abspath(__file__))
 
 
-def dl(tickers, start=START, end=END):
-    return yf.download(tickers, start=start, end=end, progress=False,
-                       auto_adjust=False, group_by='ticker')
+def dl(tickers, start=START, end=END, tries=3):
+    # Yahoo가 일시적으로 빈 응답을 주는 경우가 있어 재시도한다 (간격 30초)
+    import time
+    for i in range(1, tries + 1):
+        df = yf.download(tickers, start=start, end=end, progress=False,
+                         auto_adjust=False, group_by='ticker')
+        if df is not None and not df.empty:
+            return df
+        print(f"[dl] Yahoo 응답 비어 있음 ({i}/{tries}), 30초 후 재시도", flush=True)
+        time.sleep(30)
+    raise RuntimeError(f"Yahoo 데이터 없음: {tickers} ({tries}회 재시도 후 실패)")
 
 
 def last2(df, t):
