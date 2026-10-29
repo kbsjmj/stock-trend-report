@@ -61,9 +61,18 @@ FILE_ID=$(echo "$UP_OUT" | awk '/^id:/{print $2}')
 LINK=$(echo "$UP_OUT" | awk '/^webViewLink:/{print $2}')
 [ -n "$LINK" ] || { echo "Drive 링크를 받지 못함 -> 발행 기록 안 함"; exit 1; }
 
+HTML_NAME="${PDF_NAME%.pdf}.html"
+HTML_UP_OUT=$(python3 upload_pdf.py --file "$ROOT/reports/$HTML_NAME" --title "$HTML_NAME" \
+  --folder-id "$GDRIVE_FOLDER_ID" --public)
+echo "$HTML_UP_OUT"
+HTML_FILE_ID=$(echo "$HTML_UP_OUT" | awk '/^id:/{print $2}')
+HTML_LINK=$(echo "$HTML_UP_OUT" | awk '/^webViewLink:/{print $2}')
+[ -n "$HTML_LINK" ] || { echo "HTML Drive 링크를 받지 못함 -> 발행 기록 안 함"; exit 1; }
+
 cat > "$ROOT/state/published/${DATE}_v${VER}.json" <<JSON
 {"date": "$DATE", "write_date": "$WRITE", "version": $VER, "pdf_name": "$PDF_NAME",
  "drive_file_id": "$FILE_ID", "webViewLink": "$LINK",
+ "html_name": "$HTML_NAME", "html_drive_file_id": "$HTML_FILE_ID", "html_webViewLink": "$HTML_LINK",
  "published_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
 JSON
 echo "[run_pipeline] 발행 완료: $PDF_NAME  $LINK"
