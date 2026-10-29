@@ -44,7 +44,8 @@ _FACTOR1 = _re.compile(r'^((?:상승|하락) 요인 \d+)(?=:)')
 def _li(x):
     m = _FACTOR1.match(x)
     if m:
-        return f'<li><span style="background:#fff9c4">{_html.escape(m.group(1))}</span>{_html.escape(x[m.end():])}</li>'
+        bg = '#fde2e1' if m.group(1).startswith('상승') else '#dbeafe'
+        return f'<li><span style="background:{bg}">{_html.escape(m.group(1))}</span>{_html.escape(x[m.end():])}</li>'
     return f'<li>{_html.escape(x)}</li>'
 def _ul(items):
     return '<ul>' + ''.join(_li(x) for x in items) + '</ul>'
