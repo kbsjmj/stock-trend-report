@@ -52,6 +52,7 @@ PDF_NAME="증시추세분석 (${WRITE})_v${VER}.pdf"
 
 mkdir -p "$ROOT/reports"
 cp "$HTML" "$ROOT/reports/${PDF_NAME%.pdf}.html"
+cp "$ROOT/out/$PDF_NAME" "$ROOT/reports/$PDF_NAME"
 
 echo "[5/5] Google Drive 업로드"
 UP_OUT=$(python3 upload_pdf.py --file "$ROOT/out/$PDF_NAME" --title "$PDF_NAME" \
