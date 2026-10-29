@@ -39,8 +39,15 @@ _NARR_PATH = os.path.join(_HERE, '..', 'narrative', f'{DATE}.json')
 if not os.path.exists(_NARR_PATH):
     raise SystemExit(f'narrative 없음: {_NARR_PATH} -- 1절 원인 문구를 먼저 작성해야 발행한다')
 _N = _json.load(open(_NARR_PATH, encoding='utf-8'))
+import re as _re
+_FACTOR1 = _re.compile(r'^((?:상승|하락) 요인 1)(?=:)')
+def _li(x):
+    m = _FACTOR1.match(x)
+    if m:
+        return f'<li><span style="background:#fff9c4">{_html.escape(m.group(1))}</span>{_html.escape(x[m.end():])}</li>'
+    return f'<li>{_html.escape(x)}</li>'
 def _ul(items):
-    return '<ul>' + ''.join(f'<li>{_html.escape(x)}</li>' for x in items) + '</ul>'
+    return '<ul>' + ''.join(_li(x) for x in items) + '</ul>'
 US_HTML = _ul(_N['us'])
 KR_HTML = _ul(_N['kr'])
 
