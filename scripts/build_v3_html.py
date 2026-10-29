@@ -25,6 +25,8 @@ ul { margin:3px 0; padding-left:1.2em; } li { margin-bottom:2px; }
 .chart { margin:4px 0; page-break-inside:avoid; break-inside:avoid; }
 .chart img { max-height:6.2cm; width:100%; object-fit:contain; }
 .keep { page-break-inside:avoid; break-inside:avoid; }
+.pbrk { border-top:1px dotted #d92d20; margin:14px 0 10px; }
+@media print { .pbrk { display:none; } }
 .disc { color:#5d6878; font-size:8.5pt; border-top:1px solid #dde2ea; padding-top:6px; margin-top:14px; }
 '''
 
@@ -66,6 +68,7 @@ BODY = f'''
 <p class="note">WTI는 현물이 아닌 선물 가격입니다. 국채 10년물은 금리(%) 값 그대로이며, 등락은 %p입니다.</p>
 </div>
 
+<div class="pbrk"></div>
 <div style="page-break-before:always; break-before:page;">
 <h2><span class="secnum">&nbsp;3&nbsp;</span>. 미국 지수 추세</h2>
 <p class="note">지수 값은 현물 종가입니다. 지수 선물 시세는 이번 실행에서 조회하지 못했습니다.</p>
@@ -81,6 +84,7 @@ BODY = f'''
 <p class="note">차트는 Yahoo Finance 일봉으로 직접 그렸습니다. 영웅문 0633 차트(#지도+S&amp;P 500(일), #지도+나스닥 100(일))는 맥에서 조회할 수 없어 사용하지 않았습니다.</p>
 </div>
 
+<div class="pbrk"></div>
 <div style="page-break-before:always; break-before:page;">
 <h2><span class="secnum">&nbsp;4&nbsp;</span>. 국내 지수 추세</h2>
 <p class="note">지수 값은 현물 종가입니다. 지수 선물 시세는 pykrx가 지원하지 않아 확인 불가입니다.</p>
