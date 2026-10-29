@@ -40,7 +40,7 @@ if not os.path.exists(_NARR_PATH):
     raise SystemExit(f'narrative 없음: {_NARR_PATH} -- 1절 원인 문구를 먼저 작성해야 발행한다')
 _N = _json.load(open(_NARR_PATH, encoding='utf-8'))
 import re as _re
-_FACTOR1 = _re.compile(r'^((?:상승|하락) 요인 1)(?=:)')
+_FACTOR1 = _re.compile(r'^((?:상승|하락) 요인 \d+)(?=:)')
 def _li(x):
     m = _FACTOR1.match(x)
     if m:
