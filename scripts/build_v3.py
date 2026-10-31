@@ -185,7 +185,7 @@ f23_kosdaq = (f23 or {}).get('KOSDAQ') or {'개인': 0, '외국인': 0, '기관'
 us_theme_tbl = ''
 for i, t in enumerate(RD['theme_stats'][:5], 1):
     mem = ', '.join(f'{m["name"]} {m["pct"]:+.2f}%' for _, m in t['top'][:5])
-    us_theme_tbl += f'<tr><td>{i}</td><td class="l">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
+    us_theme_tbl += f'<tr><td>{i}</td><td class="l nw">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
 
 us_valid = [(t, r) for t, r in US.items() if r]
 us_top_pct = sorted(us_valid, key=lambda x: x[1]['pct'], reverse=True)[:10]
