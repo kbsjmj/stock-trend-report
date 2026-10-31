@@ -63,7 +63,7 @@ def candle(rows, title, fname):
     last_c, prev_c = float(rows[-1]['close']), float(rows[-2]['close'])
     box = '#c8372d' if last_c >= prev_c else '#1f5fd1'
     ax.set_xlim(-1, len(s) + 8)
-    ax.axhline(last_c, color='#c8372d', ls='--', lw=0.8)
+    ax.axhline(last_c, color='#c8372d', ls='-', lw=0.8)
     ax.annotate(f'{last_c:,.2f}', xy=(len(s) - 1, last_c), xytext=(len(s) + 0.5, last_c),
                 va='center', fontsize=7, color='white', annotation_clip=False,
                 bbox=dict(boxstyle='square,pad=0.25', fc=box, ec='none'))
