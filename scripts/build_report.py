@@ -53,6 +53,7 @@ def candle(ticker, title, fname):
     full = idx_df[ticker].dropna()
     rsi = simple_rsi([float(c) for c in full['Close']])[-60:]
     s = full.tail(60)
+    title = title.replace('10/23', s.index[-1].strftime('%m/%d'))
     fig, ax = plt.subplots(figsize=(7.4, 2.5), dpi=140)
     rsi_shade(ax, rsi)
     for i, (dt, r) in enumerate(s.iterrows()):
@@ -60,7 +61,12 @@ def candle(ticker, title, fname):
         col = '#c8372d' if c >= o else '#1f5fd1'
         ax.plot([i, i], [l, h], color=col, lw=0.8)
         ax.add_patch(Rectangle((i - 0.35, min(o, c)), 0.7, max(abs(c - o), 1e-9), color=col))
-    ax.set_xlim(-1, len(s))
+    last_c, last_o = float(s['Close'].iloc[-1]), float(s['Open'].iloc[-1])
+    last_col = '#c8372d' if last_c >= last_o else '#1f5fd1'
+    ax.set_xlim(-1, len(s) + 8)
+    ax.axhline(last_c, color=last_col, ls='--', lw=0.8)
+    ax.annotate(f'{last_c:,.2f}', xy=(len(s) - 1, last_c), xytext=(len(s) + 0.5, last_c),
+                va='center', fontsize=7, color=last_col, annotation_clip=False)
     ax.set_xticks(range(0, len(s), 10))
     ax.set_xticklabels([d.strftime('%m/%d') for d in s.index[::10]], fontsize=7)
     ax.grid(axis='y', alpha=0.3)
