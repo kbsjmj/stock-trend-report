@@ -185,13 +185,13 @@ f23_kosdaq = (f23 or {}).get('KOSDAQ') or {'개인': 0, '외국인': 0, '기관'
 us_theme_tbl = ''
 for i, t in enumerate(RD['theme_stats'][:5], 1):
     mem = ', '.join(f'{m["name"]} {m["pct"]:+.2f}%' for _, m in t['top'][:5])
-    us_theme_tbl += f'<tr><td>{i}</td><td class="l nw">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
+    us_theme_tbl += f'<tr><td class="c">{i}</td><td class="l nw">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
 
 us_valid = [(t, r) for t, r in US.items() if r]
 us_top_pct = sorted(us_valid, key=lambda x: x[1]['pct'], reverse=True)[:10]
 us_top_turn = sorted(us_valid, key=lambda x: x[1]['turnover_est'], reverse=True)[:10]
 us_pct_tbl = ''.join(f'<tr><td class="c">{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_pct, 1))
-us_turn_tbl = ''.join(f'<tr><td>{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_turn, 1))
+us_turn_tbl = ''.join(f'<tr><td class="c">{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_turn, 1))
 # 5-4 미국 관심 종목: 테마별 묶음(테마 순서 = 테마 내 거래대금 합계 큰 순), 짝수 번째 테마 행 옅은 회색
 US_THEME_OF = {
     'BigTech': ['AAPL', 'NVDA', 'MSFT', 'GOOGL', 'AMZN', 'META', 'TSLA', 'SPCX'],
@@ -219,16 +219,16 @@ for _gi, _th in enumerate(_order):
 kr_theme_tbl = ''
 for i, t in enumerate(kr_theme_stats[:5], 1):
     mem = ', '.join(f'{m["name"]} {m["pct"]:+.2f}%' for m in t['top'])
-    kr_theme_tbl += f'<tr><td>{i}</td><td class="l">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
+    kr_theme_tbl += f'<tr><td class="c">{i}</td><td class="l">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
 
 kr_pct_tbl = ''
 for i, (code, r) in enumerate(top_pct.iterrows(), 1):
-    kr_pct_tbl += (f'<tr><td>{i}</td><td class="l">{name_of(code)} <span class="tk">{code}</span></td>'
+    kr_pct_tbl += (f'<tr><td class="c">{i}</td><td class="l">{name_of(code)} <span class="tk">{code}</span></td>'
                    f'<td>{int(r["종가"]):,}</td><td>{pct(r["등락률"])}</td><td>{int(r["고가"]):,}</td><td>{int(r["시가"]):,}</td>'
                    f'<td>{int(r["저가"]):,}</td><td>{r["거래대금억"]:,.0f}</td><td>{n_(r["외국인"])}</td><td>{n_(r["기관"])}</td></tr>')
 kr_turn_tbl = ''
 for i, (code, r) in enumerate(top_turn.iterrows(), 1):
-    kr_turn_tbl += (f'<tr><td>{i}</td><td class="l">{name_of(code)} <span class="tk">{code}</span></td>'
+    kr_turn_tbl += (f'<tr><td class="c">{i}</td><td class="l">{name_of(code)} <span class="tk">{code}</span></td>'
                     f'<td>{int(r["종가"]):,}</td><td>{pct(r["등락률"])}</td><td>{int(r["고가"]):,}</td><td>{int(r["시가"]):,}</td>'
                     f'<td>{int(r["저가"]):,}</td><td>{r["거래대금억"]:,.0f}</td><td>{n_(r["외국인"])}</td><td>{n_(r["기관"])}</td></tr>')
 

@@ -108,13 +108,13 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;5&nbsp;</span>. 미국 주요 관심 종목</h2>
 <h3>5-1. 미국 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
-{tbl('<th class="nw">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl)}
+{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl)}
 <h3>5-2. 미국 상승률 상위 종목 (관심 종목 내 상위 10)</h3>
 <p class="note">전체 시장 순위는 무료 자료로 받을 수 없어 관심 종목 안에서 계산했습니다.</p>
 {tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_pct_tbl)}
 <h3>5-3. 미국 거래대금 상위 종목 (관심 종목 내 상위 10)</h3>
 <p class="note">거래대금은 종가×거래량으로 계산한 추정치입니다.</p>
-{tbl('<th>순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_turn_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_turn_tbl)}
 </div>
 <h3>5-4. 미국 주요 관심 종목</h3>
 {tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_watch_tbl)}
@@ -124,12 +124,12 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;6&nbsp;</span>. 국내 주요 관심 종목</h2>
 <h3>6-1. 국내 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
-{tbl('<th class="nw">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', kr_theme_tbl)}
+{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', kr_theme_tbl)}
 <h3>6-2. 국내 상승률 상위 종목 (전 종목, 거래대금 10억원 이상)</h3>
 <p class="note">거래대금이 너무 작은 종목의 급등을 빼기 위해 10억원 이상 조건을 두었습니다. 외국인·기관 순매수는 투자자별 순매수 거래대금(억원)입니다.</p>
-{tbl('<th>순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_pct_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_pct_tbl)}
 <h3>6-3. 국내 거래대금 상위 종목 (전 종목)</h3>
-{tbl('<th>순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_turn_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_turn_tbl)}
 </div>
 <h3>6-4. 국내 주요 관심 종목</h3>
 {tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_watch_tbl)}
