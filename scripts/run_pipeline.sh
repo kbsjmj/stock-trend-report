@@ -38,7 +38,12 @@ if [ ${#PUBLISHED[@]} -gt 0 ] && [ "${FORCE:-0}" != "1" ]; then
   echo "[run_pipeline] ${DATE} 이미 발행됨(${#PUBLISHED[@]}건) -> 건너뜀"
   exit 0
 fi
-VER=$(( ${#PUBLISHED[@]} + 1 ))
+MAXV=0
+for f in "${PUBLISHED[@]}"; do
+  v=$(basename "$f" .json); v=${v##*_v}
+  if [ "$v" -gt "$MAXV" ]; then MAXV=$v; fi
+done
+VER=$(( MAXV + 1 ))
 
 echo "[3/5] HTML 생성"
 python3 build_v3_html.py "$WRITE" "$DATE" "$PREV"
