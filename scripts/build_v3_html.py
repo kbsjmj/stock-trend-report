@@ -15,12 +15,10 @@ table { border-collapse:collapse; width:100%; margin:4px 0 6px; font-size:8.5pt;
 thead { display:table-header-group; }
 tr { page-break-inside:avoid; break-inside:avoid; }
 th, td { border-bottom:1px solid #dde2ea; padding:4px 5px; text-align:right; vertical-align:top; }
-th:first-child, td:first-child { padding-left:0; }
 th { color:#5d6878; font-weight:normal; }
 th { white-space:nowrap; }
-td.l { white-space:nowrap; }
 td.c, th.c { text-align:center; }
-.ind th:first-child, .ind td:first-child { padding-left:9pt; }
+.ind th:first-child, .ind td:first-child { padding-left:23.5pt; }
 td.l, th.l { text-align:left; }
 .tk { color:#5d6878; font-size:7.5pt; }
 .up { color:#c8372d; } .down { color:#1f5fd1; }
@@ -37,8 +35,19 @@ ul { margin:3px 0; padding-left:1.2em; } li { margin-bottom:2px; }
 '''
 
 
-def tbl(header_html, rows_html):
+def tbl(header_html, rows_html, widths=None):
+    if widths:
+        cols = ''.join(f'<col style="width:{w}pt">' for w in widths)
+        return f'<table style="table-layout:fixed"><colgroup>{cols}</colgroup><thead><tr>{header_html}</tr></thead><tbody>{rows_html}</tbody></table>'
     return f'<table><thead><tr>{header_html}</tr></thead><tbody>{rows_html}</tbody></table>'
+
+# 첨부(v30) 기준 열 너비(pt, 합계 528 = 33.8~561.8)
+W_RANK_THEME = [52.8, 73.4, 79.35, 322.45]
+W_STOCK = [42.7, 84.3, 62.5, 62.5, 62.5, 62.5, 62.5, 88.5]
+W_STOCK_TH = [58.8, 74.3, 62.5, 59.1, 59.1, 59.1, 59.1, 96.4]
+W_RANK_PCT = [33.45, 50.25, 53.55, 53.9, 45.6, 45.5, 47.5, 58.5, 40.7, 99.05]
+W_RANK_TURN = [31.15, 49.4, 53.5, 51.75, 50.5, 51.2, 49.75, 56.2, 38.7, 96.65]
+W_KR_WATCH = [52, 100, 50, 46, 44, 44, 44, 52, 48, 48]
 
 
 import json as _json, html as _html
@@ -110,31 +119,31 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;5&nbsp;</span>. 미국 주요 관심 종목</h2>
 <h3>5-1. 미국 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
-<div class="ind">{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl)}</div>
+{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl, W_RANK_THEME)}
 <h3>5-2. 미국 상승률 상위 종목 (관심 종목 내 상위 10)</h3>
 <p class="note">전체 시장 순위는 무료 자료로 받을 수 없어 관심 종목 안에서 계산했습니다.</p>
-{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_pct_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_pct_tbl, W_STOCK)}
 <h3>5-3. 미국 거래대금 상위 종목 (관심 종목 내 상위 10)</h3>
 <p class="note">거래대금은 종가×거래량으로 계산한 추정치입니다.</p>
-{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_turn_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_turn_tbl, W_STOCK)}
 </div>
 <h3>5-4. 미국 주요 관심 종목</h3>
-{tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_watch_tbl)}
+{tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_watch_tbl, W_STOCK_TH)}
 <p class="note">정정: SK하이닉스(ADM)는 미국 상장 종목이 아니므로 국내 목록(6-4)에 넣었습니다. SNR(뉴스케일)은 티커가 SMR이어서 SMR로 표기했습니다. ABRA(지브라테크놀로지스)는 데이터가 없어 제외했습니다. SPCX(스페이스X)는 데이터가 조회되지만 상장 여부를 한 번 더 확인해야 합니다. TSMC는 티커 TSM으로 표기했습니다.</p>
 
 <div class="keep">
 <h2><span class="secnum">&nbsp;6&nbsp;</span>. 국내 주요 관심 종목</h2>
 <h3>6-1. 국내 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
-{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', kr_theme_tbl)}
+{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', kr_theme_tbl, W_RANK_THEME)}
 <h3>6-2. 국내 상승률 상위 종목 (전 종목, 거래대금 10억원 이상)</h3>
 <p class="note">거래대금이 너무 작은 종목의 급등을 빼기 위해 10억원 이상 조건을 두었습니다. 외국인·기관 순매수는 투자자별 순매수 거래대금(억원)입니다.</p>
-{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_pct_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_pct_tbl, W_RANK_PCT)}
 <h3>6-3. 국내 거래대금 상위 종목 (전 종목)</h3>
-{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_turn_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_turn_tbl, W_RANK_TURN)}
 </div>
 <h3>6-4. 국내 주요 관심 종목</h3>
-{tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_watch_tbl)}
+{tbl('<th class="l">테마</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_watch_tbl, W_KR_WATCH)}
 <p class="note">정정: "레이보우로보틱스"는 "레인보우로보틱스", "알테오진"은 "알테오젠", "지투바이오"는 KRX 등록명 "지투지바이오"(456160)로 표기했습니다. 스피어(347700)는 코스닥 등록명 그대로입니다.</p>
 
 <div class="keep">
