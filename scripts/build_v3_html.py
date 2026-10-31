@@ -16,7 +16,9 @@ thead { display:table-header-group; }
 tr { page-break-inside:avoid; break-inside:avoid; }
 th, td { border-bottom:1px solid #dde2ea; padding:4px 5px; text-align:right; vertical-align:top; }
 th { color:#5d6878; font-weight:normal; }
-th.nw { white-space:nowrap; }
+th { white-space:nowrap; }
+td.l { white-space:nowrap; }
+td.c, th.c { text-align:center; }
 td.l, th.l { text-align:left; }
 .tk { color:#5d6878; font-size:7.5pt; }
 .up { color:#c8372d; } .down { color:#1f5fd1; }
@@ -109,7 +111,7 @@ BODY = f'''
 {tbl('<th class="nw">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl)}
 <h3>5-2. 미국 상승률 상위 종목 (관심 종목 내 상위 10)</h3>
 <p class="note">전체 시장 순위는 무료 자료로 받을 수 없어 관심 종목 안에서 계산했습니다.</p>
-{tbl('<th>순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_pct_tbl)}
+{tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_pct_tbl)}
 <h3>5-3. 미국 거래대금 상위 종목 (관심 종목 내 상위 10)</h3>
 <p class="note">거래대금은 종가×거래량으로 계산한 추정치입니다.</p>
 {tbl('<th>순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_turn_tbl)}

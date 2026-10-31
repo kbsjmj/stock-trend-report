@@ -190,7 +190,7 @@ for i, t in enumerate(RD['theme_stats'][:5], 1):
 us_valid = [(t, r) for t, r in US.items() if r]
 us_top_pct = sorted(us_valid, key=lambda x: x[1]['pct'], reverse=True)[:10]
 us_top_turn = sorted(us_valid, key=lambda x: x[1]['turnover_est'], reverse=True)[:10]
-us_pct_tbl = ''.join(f'<tr><td>{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_pct, 1))
+us_pct_tbl = ''.join(f'<tr><td class="c">{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_pct, 1))
 us_turn_tbl = ''.join(f'<tr><td>{i}</td>' + us_tr(t, r)[4:] for i, (t, r) in enumerate(us_top_turn, 1))
 # 5-4 미국 관심 종목: 테마별 묶음(테마 순서 = 테마 내 거래대금 합계 큰 순), 짝수 번째 테마 행 옅은 회색
 US_THEME_OF = {
