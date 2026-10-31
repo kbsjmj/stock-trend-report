@@ -36,7 +36,7 @@ INDEX_CODE = {'코스피': '1001', '코스닥': '2001'}
 
 def fetch_index_ohlcv(ticker, base_dt):
     end = dt.datetime.strptime(base_dt, '%Y%m%d').date()
-    start = (end - dt.timedelta(days=120)).strftime('%Y%m%d')  # 60거래일 확보용 여유
+    start = (end - dt.timedelta(days=200)).strftime('%Y%m%d')  # 100거래일 확보용 여유
     df = stock.get_index_ohlcv_by_date(start, base_dt, ticker)
     rows = []
     for idx, row in df.iterrows():
@@ -51,8 +51,8 @@ def fetch_index_ohlcv(ticker, base_dt):
 
 
 def candle(rows, title, fname):
-    rsi = simple_rsi([float(r['close']) for r in rows])[-60:]
-    s = rows[-60:]
+    rsi = simple_rsi([float(r['close']) for r in rows])[-100:]
+    s = rows[-100:]
     fig, ax = plt.subplots(figsize=(7.4, 2.5), dpi=140)
     rsi_shade(ax, rsi)
     for i, r in enumerate(s):
@@ -97,7 +97,7 @@ def main():
             'name': name, 'ticker': f'pykrx 지수 {code}',
             'prev': prev, 'close': cur, 'chg': chg, 'pct': pct, 'date': rows[-1]['date'],
         }
-        CH[chart_key[name]] = candle(rows, f'{name} 일봉 (최근 60거래일, KRX, {DATE[4:6]}/{DATE[6:]} 기준)', chart_key[name])
+        CH[chart_key[name]] = candle(rows, f'{name} 일봉 (최근 100거래일, KRX, {DATE[4:6]}/{DATE[6:]} 기준)', chart_key[name])
         RD.setdefault('rsi', {})[chart_key[name]] = rsi_latest(
             [float(r['close']) for r in rows], [f'{r["date"][4:6]}/{r["date"][6:]}' for r in rows])
         print(name, '갱신:', RD['index_rows'][name])

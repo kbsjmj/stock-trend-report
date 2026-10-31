@@ -16,7 +16,7 @@ plt.rcParams['axes.unicode_minus'] = False
 
 DATE = sys.argv[1] if len(sys.argv) > 1 else '20261023'
 _d = dt.date(int(DATE[:4]), int(DATE[4:6]), int(DATE[6:]))
-START = (_d - dt.timedelta(days=145)).isoformat()
+START = (_d - dt.timedelta(days=200)).isoformat()
 END = (_d + dt.timedelta(days=1)).isoformat()  # 종료일은 배타적 상한. DATE를 마지막 거래일로 고정
 import os
 WORK = os.path.dirname(os.path.abspath(__file__))
@@ -48,11 +48,11 @@ def row(name, t, df, digits=2):
 index_rows = {k: row(k, v, idx_df) for k, v in IDX.items()}
 eco_rows = {k: row(k, v, idx_df, 3) for k, v in ECO.items()}
 
-# ---- 2. 캔들차트 (최근 60거래일) ----
+# ---- 2. 캔들차트 (최근 100거래일) ----
 def candle(ticker, title, fname):
     full = idx_df[ticker].dropna()
-    rsi = simple_rsi([float(c) for c in full['Close']])[-60:]
-    s = full.tail(60)
+    rsi = simple_rsi([float(c) for c in full['Close']])[-100:]
+    s = full.tail(100)
     title = title.replace('10/23', s.index[-1].strftime('%m/%d'))
     fig, ax = plt.subplots(figsize=(7.4, 2.5), dpi=140)
     rsi_shade(ax, rsi)
@@ -81,10 +81,10 @@ def candle(ticker, title, fname):
         return base64.b64encode(f.read()).decode()
 
 charts = {
-    'SPX': candle('^GSPC', 'S&P 500 일봉 (최근 60거래일, 10/23 기준)', 'chart_spx'),
-    'IXIC': candle('^IXIC', '나스닥 종합 일봉 (최근 60거래일, 10/23 기준)', 'chart_ixic'),
-    'KS11': candle('^KS11', '코스피 일봉 (최근 60거래일, 10/23 기준)', 'chart_kospi'),
-    'KQ11': candle('^KQ11', '코스닥 일봉 (최근 60거래일, 10/23 기준)', 'chart_kosdaq'),
+    'SPX': candle('^GSPC', 'S&P 500 일봉 (최근 100거래일, 10/23 기준)', 'chart_spx'),
+    'IXIC': candle('^IXIC', '나스닥 종합 일봉 (최근 100거래일, 10/23 기준)', 'chart_ixic'),
+    'KS11': candle('^KS11', '코스피 일봉 (최근 100거래일, 10/23 기준)', 'chart_kospi'),
+    'KQ11': candle('^KQ11', '코스닥 일봉 (최근 100거래일, 10/23 기준)', 'chart_kosdaq'),
 }
 rsi_rows = {}
 for key, t in (('SPX', '^GSPC'), ('IXIC', '^IXIC')):
