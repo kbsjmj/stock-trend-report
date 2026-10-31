@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       src:
-        description: 'reports/ 안의 원본 HTML 파일명'
+        description: 'reports/ 안의 PDF 파일명'
         required: true
       date:
         description: '기준일 YYYYMMDD (state 키)'
@@ -13,8 +13,12 @@ on:
         description: '작성일 YYYYMMDD (파일명 날짜)'
         required: true
       version:
-        description: '새 버전 번호'
+        description: '상태 버전 번호 (state 키)'
         required: true
+      title:
+        description: 'Drive 제목 (비우면 증시추세분석 (작성일)-vN.pdf)'
+        required: false
+        default: ''
 
 concurrency:
   group: daily-report
@@ -47,10 +51,10 @@ jobs:
           printf '%s' "$GDRIVE_CREDENTIALS_JSON" > scripts/secrets/credentials.json
           printf '%s' "$GDRIVE_TOKEN_JSON" > scripts/secrets/token.json
           chmod 600 scripts/secrets/*.json
-      - name: 보고서 PDF 생성 및 Drive 저장
+      - name: 보고서 PDF Drive 저장
         env:
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
-        run: bash scripts/save_report_version.sh "${{ github.event.inputs.src }}" "${{ github.event.inputs.date }}" "${{ github.event.inputs.write }}" "${{ github.event.inputs.version }}"
+        run: bash scripts/save_report_version.sh "${{ github.event.inputs.src }}" "${{ github.event.inputs.date }}" "${{ github.event.inputs.write }}" "${{ github.event.inputs.version }}" "${{ github.event.inputs.title }}"
       - name: 결과 커밋
         if: always()
         run: |
