@@ -20,6 +20,7 @@ th { color:#5d6878; font-weight:normal; }
 th { white-space:nowrap; }
 td.l { white-space:nowrap; }
 td.c, th.c { text-align:center; }
+.ind th:first-child, .ind td:first-child { padding-left:9pt; }
 td.l, th.l { text-align:left; }
 .tk { color:#5d6878; font-size:7.5pt; }
 .up { color:#c8372d; } .down { color:#1f5fd1; }
@@ -69,7 +70,7 @@ BODY = f'''
 <h3>1-2. 국내 증시 추세 요약</h3>
 {KR_HTML}
 <h2><span class="secnum">&nbsp;2&nbsp;</span>. 주요 경제 지표</h2>
-{eco_tbl}
+<div class="ind">{eco_tbl}</div>
 <p class="note">WTI는 현물이 아닌 선물 가격입니다. 국채 10년물은 금리(%) 값 그대로이며, 등락은 %p입니다.</p>
 </div>
 
@@ -78,7 +79,7 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;3&nbsp;</span>. 미국 지수 추세</h2>
 <p class="note">지수 값은 현물 종가입니다. 지수 선물 시세는 이번 실행에서 조회하지 못했습니다.</p>
 <h3>3-1. 미국 업종 지수</h3>
-{us_idx_tbl}
+<div class="ind">{us_idx_tbl}</div>
 </div>
 <div>
 <h3>3-2. 미국 업종 차트 (일봉, 최근 100거래일)</h3>
@@ -94,9 +95,9 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;4&nbsp;</span>. 국내 지수 추세</h2>
 <p class="note">지수 값은 현물 종가입니다. 지수 선물 시세는 pykrx가 지원하지 않아 확인 불가입니다.</p>
 <h3>4-1. 국내 업종 지수</h3>
-{kr_idx_tbl}
+<div class="ind">{kr_idx_tbl}</div>
 <h3>4-2. 국내 증시 수급 (순매수 거래대금, 억원, KRX 공식)</h3>
-{flow_tbl}
+<div class="ind">{flow_tbl}</div>
 <p class="note">10/22 기사 값(코스피 개인 +3,802·외국인 +614·기관 -4,621)은 KRX 값과 달라 채택하지 않았습니다.</p>
 <h3>4-3. 국내 지수 차트 (일봉, 최근 100거래일)</h3>
 <h3>4-3-1. 코스피</h3>
@@ -109,7 +110,7 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;5&nbsp;</span>. 미국 주요 관심 종목</h2>
 <h3>5-1. 미국 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
-{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl)}
+<div class="ind">{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl)}</div>
 <h3>5-2. 미국 상승률 상위 종목 (관심 종목 내 상위 10)</h3>
 <p class="note">전체 시장 순위는 무료 자료로 받을 수 없어 관심 종목 안에서 계산했습니다.</p>
 {tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>추정 거래대금(백만$)</th>', us_pct_tbl)}
