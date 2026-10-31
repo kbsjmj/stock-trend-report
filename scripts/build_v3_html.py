@@ -15,6 +15,7 @@ table { border-collapse:collapse; width:100%; margin:4px 0 6px; font-size:8.5pt;
 thead { display:table-header-group; }
 tr { page-break-inside:avoid; break-inside:avoid; }
 th, td { border-bottom:1px solid #dde2ea; padding:4px 5px; text-align:right; vertical-align:top; }
+th:first-child, td:first-child { padding-left:0; }
 th { color:#5d6878; font-weight:normal; }
 th { white-space:nowrap; }
 td.l { white-space:nowrap; }
