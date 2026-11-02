@@ -222,6 +222,31 @@ for i, t in enumerate(kr_theme_stats[:5], 1):
     mem = ', '.join(f'{m["name"]} {m["pct"]:+.2f}%' for m in t['top'])
     kr_theme_tbl += f'<tr><td class="c">{i}</td><td class="l">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
 
+# 5-2 국내 연관 테마 및 종목: 미국 5-1 상위 5개 테마와 같은 테마·같은 순위
+# 국내 종목은 테마별 연관 종목 목록이고, 등락률은 RD['kr_rows']의 기준일 값을 쓴다.
+# 값이 없는 종목은 '등락률 미집계'로 쓴다. 목록을 바꾸면 지침 v36 2절과 함께 고친다.
+KR_RELATED = {
+    '태양광': ['OCI홀딩스', '한화솔루션', 'HD현대에너지솔루션'],
+    'BigTech': ['삼성전자', 'SK하이닉스', 'LG전자', '현대오토에버'],
+    '2차전지': ['LG에너지솔루션', '삼성SDI', '에코프로'],
+    '로봇': ['두산로보틱스', '레인보우로보틱스', '로보티즈'],
+    'AI': ['LG전자', '현대오토에버'],
+}
+_kr_map = RD['kr_rows']
+def _kr_pct(n):
+    return (_kr_map.get(n) or {}).get('pct')
+def _kr_cell(name):
+    p = _kr_pct(name)
+    if p is not None:
+        return f'{name} {p:+.2f}%'
+    return f'{name} (등락률 미집계)'
+kr_rel_tbl = ''
+for i, t in enumerate(RD['theme_stats'][:5], 1):
+    names = sorted(KR_RELATED.get(t['theme'], []), key=lambda n: (_kr_pct(n) if _kr_pct(n) is not None else -999), reverse=True)
+    cell = ', '.join(_kr_cell(n) for n in names)
+    kr_rel_tbl += f'<tr><td class="c">{i}</td><td class="l nw">{t["theme"]}</td><td class="l">{cell}</td></tr>'
+
+
 kr_pct_tbl = ''
 for i, (code, r) in enumerate(top_pct.iterrows(), 1):
     kr_pct_tbl += (f'<tr><td class="c">{i}</td><td class="l">{name_of(code)} <span class="tk">{code}</span></td>'
