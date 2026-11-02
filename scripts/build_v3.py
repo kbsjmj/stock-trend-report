@@ -146,10 +146,11 @@ eco_tbl = f'''<table>
 us_idx_tbl = f'''<table>
 <thead><tr><th class="l">지수</th><th>종가</th><th>등락</th><th>등락률</th></tr></thead>
 <tbody>
-<tr><td class="l">S&amp;P 500</td><td>{i_sp["close"]:,.2f}</td><td class="{cls(i_sp["chg"])}">{i_sp["chg"]:+,.2f}</td><td>{pct(i_sp["pct"])}</td></tr>
-<tr><td class="l">나스닥 종합</td><td>{i_nq["close"]:,.2f}</td><td class="{cls(i_nq["chg"])}">{i_nq["chg"]:+,.2f}</td><td>{pct(i_nq["pct"])}</td></tr>
-</tbody></table>
-<p class="note">참고: 다우 {i_dj["close"]:,.2f} ({i_dj["pct"]:+.2f}%), 필라델피아 반도체 {i_sox["close"]:,.2f} ({i_sox["pct"]:+.2f}%).</p>'''
+<tr><td class="l">다우존스</td><td>{i_dj["close"]:,.2f}</td><td class="{cls(i_dj["chg"])}">{i_dj["chg"]:+,.2f}</td><td class="{cls(i_dj["pct"])}">{i_dj["pct"]:+.2f}%</td></tr>
+<tr><td class="l">S&amp;P 500</td><td>{i_sp["close"]:,.2f}</td><td class="{cls(i_sp["chg"])}">{i_sp["chg"]:+,.2f}</td><td class="{cls(i_sp["pct"])}">{i_sp["pct"]:+.2f}%</td></tr>
+<tr><td class="l">나스닥 종합</td><td>{i_nq["close"]:,.2f}</td><td class="{cls(i_nq["chg"])}">{i_nq["chg"]:+,.2f}</td><td class="{cls(i_nq["pct"])}">{i_nq["pct"]:+.2f}%</td></tr>
+<tr><td class="l">필라델피아 반도체</td><td>{i_sox["close"]:,.2f}</td><td class="{cls(i_sox["chg"])}">{i_sox["chg"]:+,.2f}</td><td class="{cls(i_sox["pct"])}">{i_sox["pct"]:+.2f}%</td></tr>
+</tbody></table>'''
 
 kr_idx_tbl = f'''<table>
 <thead><tr><th class="l">지수</th><th>종가</th><th>등락</th><th>등락률</th></tr></thead>
