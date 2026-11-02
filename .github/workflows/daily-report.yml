@@ -86,6 +86,13 @@ jobs:
           FORCE: ${{ github.event.inputs.force == 'true' && '1' || '0' }}
         run: bash scripts/run_pipeline.sh "${{ steps.dates.outputs.date }}" "${{ steps.dates.outputs.write }}"
 
+      - name: 지침·컨텍스트·실행방법 Drive 업로드 (최신 버전, 같은 이름은 건너뜀)
+        if: always()
+        env:
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          cd scripts && python3 upload_docs.py --docs-dir ../docs --folder-id "$GDRIVE_FOLDER_ID"
+
       - name: 결과 저장 (데이터·발행 기록만 커밋)
         if: always()
         run: |
