@@ -11,6 +11,9 @@ on:
       date:
         description: '기준일 YYYYMMDD (비우면 자동)'
         required: false
+      write:
+        description: '작성일 YYYYMMDD (비우면 자동, 월요일 보고서는 월요일 날짜)'
+        required: false
       force:
         description: '이미 발행된 날짜도 다시 발행'
         type: boolean
@@ -59,14 +62,20 @@ jobs:
         env:
           EVENT: ${{ github.event_name }}
           INPUT_DATE: ${{ github.event.inputs.date }}
+          INPUT_WRITE: ${{ github.event.inputs.write }}
         run: |
           if [ "$EVENT" = "push" ]; then
-            D=$(git diff --name-only HEAD~1 HEAD -- narrative | grep -oE '[0-9]{8}' | head -1)
+            F=$(git diff --name-only HEAD~1 HEAD -- narrative | head -1)
+            NAME=$(basename "$F" .json)
+            D=$(echo "$NAME" | grep -oE '[0-9]{8}' | sed -n 1p)
+            W=$(echo "$NAME" | grep -oE '[0-9]{8}' | sed -n 2p)
           else
             D="$INPUT_DATE"
+            W="$INPUT_WRITE"
           fi
           echo "date=$D" >> "$GITHUB_OUTPUT"
-          echo "기준일 인자: '${D}' (비어 있으면 자동 계산)"
+          echo "write=$W" >> "$GITHUB_OUTPUT"
+          echo "기준일 인자: '${D}', 작성일 인자: '${W}' (비어 있으면 자동 계산)"
 
       - name: 파이프라인 실행
         env:
@@ -75,7 +84,7 @@ jobs:
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
           CHART_FONT: NanumGothic
           FORCE: ${{ github.event.inputs.force == 'true' && '1' || '0' }}
-        run: bash scripts/run_pipeline.sh "${{ steps.dates.outputs.date }}"
+        run: bash scripts/run_pipeline.sh "${{ steps.dates.outputs.date }}" "${{ steps.dates.outputs.write }}"
 
       - name: 결과 저장 (데이터·발행 기록만 커밋)
         if: always()

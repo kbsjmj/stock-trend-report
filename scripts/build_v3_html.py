@@ -52,7 +52,8 @@ W_KR_WATCH = [52, 100, 50, 46, 44, 44, 44, 52, 48, 48]
 
 import json as _json, html as _html
 def _fmt_md(d): return f'{d[4:6]}/{d[6:]}'
-_NARR_PATH = os.path.join(_HERE, '..', 'narrative', f'{DATE}.json')
+_NARR_KEY = os.environ.get('NARR_KEY') or DATE
+_NARR_PATH = os.path.join(_HERE, '..', 'narrative', f'{_NARR_KEY}.json')
 if not os.path.exists(_NARR_PATH):
     raise SystemExit(f'narrative 없음: {_NARR_PATH} -- 1절 원인 문구를 먼저 작성해야 발행한다')
 _N = _json.load(open(_NARR_PATH, encoding='utf-8'))

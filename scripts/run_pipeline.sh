@@ -11,7 +11,9 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/scripts"
 
 read -r DATE WRITE PREV < <(python3 calc_dates.py "${1:-}")
-echo "[run_pipeline] 기준일=$DATE 작성일=$WRITE 전일=$PREV"
+if [ -n "${2:-}" ]; then WRITE="$2"; KEY="${DATE}-w${WRITE}"; else KEY="$DATE"; fi
+export NARR_KEY="$KEY"
+echo "[run_pipeline] 기준일=$DATE 작성일=$WRITE 전일=$PREV 발행키=$KEY"
 
 echo "[1/5] 미국 데이터 (Yahoo Finance)"
 python3 build_report.py "$DATE"
@@ -26,16 +28,16 @@ python3 build_krx.py "$PREV"
 mkdir -p "$ROOT/data" "$ROOT/state/published" "$ROOT/out"
 cp "report_data_${DATE}.json" "$ROOT/data/"
 
-NARR="$ROOT/narrative/${DATE}.json"
+NARR="$ROOT/narrative/${KEY}.json"
 if [ ! -f "$NARR" ]; then
-  echo "[run_pipeline] narrative/${DATE}.json 없음 -> 데이터만 저장하고 종료 (발행 안 함)"
+  echo "[run_pipeline] narrative/${KEY}.json 없음 -> 데이터만 저장하고 종료 (발행 안 함)"
   exit 0
 fi
 
 shopt -s nullglob
-PUBLISHED=("$ROOT/state/published/${DATE}"_v*.json)
+PUBLISHED=("$ROOT/state/published/${KEY}"_v*.json)
 if [ ${#PUBLISHED[@]} -gt 0 ] && [ "${FORCE:-0}" != "1" ]; then
-  echo "[run_pipeline] ${DATE} 이미 발행됨(${#PUBLISHED[@]}건) -> 건너뜀"
+  echo "[run_pipeline] ${KEY} 이미 발행됨(${#PUBLISHED[@]}건) -> 건너뜀"
   exit 0
 fi
 MAXV=0
@@ -75,8 +77,8 @@ HTML_FILE_ID=$(echo "$HTML_UP_OUT" | awk '/^id:/{print $2}')
 HTML_LINK=$(echo "$HTML_UP_OUT" | awk '/^webViewLink:/{print $2}')
 [ -n "$HTML_LINK" ] || { echo "HTML Drive 링크를 받지 못함 -> 발행 기록 안 함"; exit 1; }
 
-cat > "$ROOT/state/published/${DATE}_v${VER}.json" <<JSON
-{"date": "$DATE", "write_date": "$WRITE", "version": $VER, "pdf_name": "$PDF_NAME",
+cat > "$ROOT/state/published/${KEY}_v${VER}.json" <<JSON
+{"date": "$DATE", "write_date": "$WRITE", "key": "$KEY", "version": $VER, "pdf_name": "$PDF_NAME",
  "drive_file_id": "$FILE_ID", "webViewLink": "$LINK",
  "html_name": "$HTML_NAME", "html_drive_file_id": "$HTML_FILE_ID", "html_webViewLink": "$HTML_LINK",
  "published_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
