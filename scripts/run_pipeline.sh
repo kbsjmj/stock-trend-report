@@ -5,7 +5,8 @@
 #  1) 데이터 수집·계산 -> data/report_data_기준일.json 저장 (Claude가 1절 원인 문구 작성 시 참고)
 #  2) narrative/기준일.json 이 없으면 여기서 종료(발행 안 함, 정상 종료)
 #  3) 있으면 HTML -> PDF -> Google Drive 업로드 -> state/published/ 기록
-# 발행은 날짜당 한 번만 한다. 재발행은 FORCE=1. 실패해도 자동 재시도하지 않는다.
+# 발행은 날짜당 한 번만 한다(자동·push 실행). 수동 실행(workflow_dispatch)은 FORCE=1로 돌아가
+# 기존 발행이 있어도 새 버전을 만든다. 실패해도 자동 재시도하지 않는다.
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/scripts"

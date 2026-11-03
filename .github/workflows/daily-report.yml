@@ -15,7 +15,7 @@ on:
         description: '작성일 YYYYMMDD (비우면 자동, 월요일 보고서는 월요일 날짜)'
         required: false
       force:
-        description: '이미 발행된 날짜도 다시 발행'
+        description: '이미 발행된 날짜도 다시 발행 (수동 실행은 항상 새 버전을 만들므로 참고용)'
         type: boolean
         default: false
 
@@ -83,7 +83,9 @@ jobs:
           KRX_PW: ${{ secrets.KRX_PW }}
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
           CHART_FONT: NanumGothic
-          FORCE: ${{ github.event.inputs.force == 'true' && '1' || '0' }}
+          # 수동 실행(workflow_dispatch)은 보고서 작성 명령이므로 항상 새 버전을 만든다.
+          # 자동(07:00)과 narrative push는 같은 날짜에 이미 발행된 기록이 있으면 건너뛴다.
+          FORCE: ${{ (github.event_name == 'workflow_dispatch' || github.event.inputs.force == 'true') && '1' || '0' }}
         run: bash scripts/run_pipeline.sh "${{ steps.dates.outputs.date }}" "${{ steps.dates.outputs.write }}"
 
       - name: 지침·컨텍스트·실행방법 Drive 업로드 (최신 버전, 같은 이름은 건너뜀)
