@@ -22,13 +22,39 @@ import os
 WORK = os.path.dirname(os.path.abspath(__file__))
 
 
-def dl(tickers, start=START, end=END):
-    return yf.download(tickers, start=start, end=end, progress=False,
-                       auto_adjust=False, group_by='ticker')
+def _missing(df, tickers):
+    """종가가 비어 있는 종목 목록 (yfinance 'database is locked' 등 일시 실패 감지)."""
+    tks = [tickers] if isinstance(tickers, str) else list(tickers)
+    bad = []
+    for t in tks:
+        try:
+            if len(df[t]['Close'].dropna()) < 2:
+                bad.append(t)
+        except Exception:
+            bad.append(t)
+    return bad
+
+
+def dl(tickers, start=START, end=END, tries=4):
+    """yfinance 다운로드. 일시 실패(캐시 DB 잠금 등)는 간격을 두고 재시도한다."""
+    import time
+    last_bad = []
+    for i in range(tries):
+        df = yf.download(tickers, start=start, end=end, progress=False,
+                         auto_adjust=False, group_by='ticker')
+        last_bad = _missing(df, tickers) if df is not None and len(df) else list(
+            [tickers] if isinstance(tickers, str) else tickers)
+        if not last_bad:
+            return df
+        print(f"[dl] 재시도 {i + 1}/{tries}: 종가 없음 {last_bad}", flush=True)
+        time.sleep(20 * (i + 1))
+    raise RuntimeError(f"yfinance 다운로드 실패(재시도 {tries}회): {last_bad}")
 
 
 def last2(df, t):
     s = df[t]['Close'].dropna()
+    if len(s) < 2:
+        raise RuntimeError(f"종가 데이터 부족: {t} ({len(s)}건)")
     return s.iloc[-2], s.iloc[-1], s.index[-1].date()
 
 
