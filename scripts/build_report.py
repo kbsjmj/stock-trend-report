@@ -48,7 +48,9 @@ def dl(tickers, start=START, end=END, tries=4):
             return df
         print(f"[dl] 재시도 {i + 1}/{tries}: 종가 없음 {last_bad}", flush=True)
         time.sleep(20 * (i + 1))
-    raise RuntimeError(f"yfinance 다운로드 실패(재시도 {tries}회): {last_bad}")
+    # 끝까지 비어 있는 종목은 경고만 남기고 반환한다. 지수 등 필수 종목은 last2()가 명확한 오류로 막는다.
+    print(f"[dl] 경고: 재시도 후에도 종가 없음 {last_bad} (해당 종목은 제외하고 진행)", flush=True)
+    return df
 
 
 def last2(df, t):
