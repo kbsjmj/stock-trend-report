@@ -4,7 +4,7 @@
 # 동작:
 #  1) 데이터 수집·계산 -> data/report_data_기준일.json 저장 (Claude가 1절 원인 문구 작성 시 참고)
 #  2) narrative/기준일.json 이 없으면 여기서 종료(발행 안 함, 정상 종료)
-#  3) 있으면 HTML -> PDF -> Google Drive 업로드 -> state/published/ 기록
+#  3) 있으면 HTML(임시) -> PDF -> Google Drive 업로드 -> state/published/ 기록 (HTML은 저장·업로드하지 않는다)
 # 발행은 날짜당 한 번만 한다(자동·push 실행). 수동 실행(workflow_dispatch)은 FORCE=1로 돌아가
 # 기존 발행이 있어도 새 버전을 만든다. 실패해도 자동 재시도하지 않는다.
 set -euo pipefail
@@ -12,7 +12,13 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT/scripts"
 
 read -r DATE WRITE PREV < <(python3 calc_dates.py "${1:-}")
-if [ -n "${2:-}" ]; then WRITE="$2"; KEY="${DATE}-w${WRITE}"; else KEY="$DATE"; fi
+if [ -n "${2:-}" ]; then WRITE="$2"; fi
+# 월요일 작성일 보고서는 별도 키(DATE-wWRITE)로 발행한다(토요일 보고서와 구분)
+if [ -n "${2:-}" ] || [ "$(python3 -c "import datetime,sys;print(datetime.datetime.strptime(sys.argv[1],'%Y%m%d').isoweekday())" "$WRITE")" = "1" ]; then
+  KEY="${DATE}-w${WRITE}"
+else
+  KEY="$DATE"
+fi
 export NARR_KEY="$KEY"
 echo "[run_pipeline] 기준일=$DATE 작성일=$WRITE 전일=$PREV 발행키=$KEY"
 
@@ -57,9 +63,9 @@ PDF_NAME="증시추세분석 (${WRITE})_v${VER}.pdf"
 "${CHROME_BIN:-google-chrome}" --headless=new --no-sandbox --disable-gpu \
   --no-pdf-header-footer --print-to-pdf="$ROOT/out/$PDF_NAME" \
   "file://$(pwd)/$HTML"
+rm -f "$HTML"   # HTML은 PDF 변환용 임시 파일이다(지침 v47). 저장하거나 올리지 않는다.
 
 mkdir -p "$ROOT/reports"
-cp "$HTML" "$ROOT/reports/${PDF_NAME%.pdf}.html"
 cp "$ROOT/out/$PDF_NAME" "$ROOT/reports/$PDF_NAME"
 
 echo "[5/5] Google Drive 업로드"
@@ -70,18 +76,9 @@ FILE_ID=$(echo "$UP_OUT" | awk '/^id:/{print $2}')
 LINK=$(echo "$UP_OUT" | awk '/^webViewLink:/{print $2}')
 [ -n "$LINK" ] || { echo "Drive 링크를 받지 못함 -> 발행 기록 안 함"; exit 1; }
 
-HTML_NAME="${PDF_NAME%.pdf}.html"
-HTML_UP_OUT=$(python3 upload_pdf.py --file "$ROOT/reports/$HTML_NAME" --title "$HTML_NAME" \
-  --folder-id "$GDRIVE_FOLDER_ID" --public)
-echo "$HTML_UP_OUT"
-HTML_FILE_ID=$(echo "$HTML_UP_OUT" | awk '/^id:/{print $2}')
-HTML_LINK=$(echo "$HTML_UP_OUT" | awk '/^webViewLink:/{print $2}')
-[ -n "$HTML_LINK" ] || { echo "HTML Drive 링크를 받지 못함 -> 발행 기록 안 함"; exit 1; }
-
 cat > "$ROOT/state/published/${KEY}_v${VER}.json" <<JSON
 {"date": "$DATE", "write_date": "$WRITE", "key": "$KEY", "version": $VER, "pdf_name": "$PDF_NAME",
  "drive_file_id": "$FILE_ID", "webViewLink": "$LINK",
- "html_name": "$HTML_NAME", "html_drive_file_id": "$HTML_FILE_ID", "html_webViewLink": "$HTML_LINK",
  "published_at_utc": "$(date -u +%Y-%m-%dT%H:%M:%SZ)"}
 JSON
 echo "[run_pipeline] 발행 완료: $PDF_NAME  $LINK"
