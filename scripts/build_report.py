@@ -82,7 +82,7 @@ def candle(ticker, title, fname):
     rsi = simple_rsi([float(c) for c in full['Close']])[-100:]
     s = full.tail(100)
     title = title.replace('10/23', s.index[-1].strftime('%m/%d'))
-    fig, ax = plt.subplots(figsize=(7.4, 2.5), dpi=140)
+    fig, ax = plt.subplots(figsize=(9.6, 2.5), dpi=140)
     rsi_shade(ax, rsi)
     for i, (dt, r) in enumerate(s.iterrows()):
         o, h, l, c = r['Open'], r['High'], r['Low'], r['Close']
@@ -92,7 +92,7 @@ def candle(ticker, title, fname):
     last_c, prev_c = float(full['Close'].iloc[-1]), float(full['Close'].iloc[-2])
     box = '#c8372d' if last_c >= prev_c else '#1f5fd1'
     ax.set_xlim(-1, len(s) + 8)
-    ax.axhline(last_c, color='#c8372d', ls='-', lw=0.8)
+    ax.axhline(last_c, color='#c8372d', ls='--', lw=0.8)
     ax.annotate(f'{last_c:,.2f}', xy=(len(s) - 1, last_c), xytext=(len(s) + 0.5, last_c),
                 va='center', fontsize=7, color='white', annotation_clip=False,
                 bbox=dict(boxstyle='square,pad=0.25', fc=box, ec='none'))
