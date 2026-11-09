@@ -1,15 +1,5 @@
 name: daily-report
-concurrency:
-  group: daily-report
-  cancel-in-progress: false
-permissions:
-  contents: write
-jobs:
-  report:
-    runs-on: ubuntu-latest
-    steps:
-    - run: echo hello
-true:
+'on':
   schedule:
   - cron: 30 20 * * 0-4
   push:
@@ -29,3 +19,13 @@ true:
         description: 이미 발행된 날짜도 다시 발행 (수동 실행은 항상 새 버전을 만들므로 참고용)
         type: boolean
         default: false
+concurrency:
+  group: daily-report
+  cancel-in-progress: false
+permissions:
+  contents: write
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    steps:
+    - run: echo hello
