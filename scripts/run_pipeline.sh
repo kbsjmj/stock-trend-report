@@ -31,6 +31,8 @@ python3 build_krx_domestic.py "$DATE"
 echo "[2/5] KRX 수급·시세 (pykrx)"
 python3 build_krx.py "$DATE"
 python3 build_krx.py "$PREV"
+echo "[2-1/5] 국내 종목 값을 KRX 기준으로 보정 (yfinance 기준일 값 누락 대비)"
+python3 patch_kr_rows.py "$DATE" "$PREV"
 
 mkdir -p "$ROOT/data" "$ROOT/state/published" "$ROOT/out"
 cp "report_data_${DATE}.json" "$ROOT/data/"
