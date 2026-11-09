@@ -95,6 +95,13 @@ jobs:
         run: |
           cd scripts && python3 upload_docs.py --docs-dir ../docs --folder-id "$GDRIVE_FOLDER_ID"
 
+      - name: 프로그램 백업 (드라이브 버전 폴더 P#, 내용이 바뀐 경우만)
+        if: always()
+        env:
+          GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
+        run: |
+          cd scripts && python3 upload_programs.py --folder-id "$GDRIVE_FOLDER_ID"
+
       - name: 결과 저장 (데이터·발행 기록만 커밋)
         if: always()
         run: |
