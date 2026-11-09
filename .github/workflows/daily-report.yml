@@ -2,7 +2,7 @@ name: daily-report
 
 on:
   schedule:
-    - cron: '0 22 * * 0-4'        # KST 월~금 07:00 (UTC 일~목 22:00). GitHub 예약은 수십 분 지연될 수 있음
+    - cron: '30 20 * * 0-4'        # KST 월~금 05:30 (UTC 일~목 20:30). 06:28 Claude 예약 전에 데이터를 먼저 만든다. GitHub 예약은 수십 분 지연될 수 있음
   push:
     branches: [main]
     paths: ['narrative/*.json']    # Claude가 1절 원인 문구를 올리면 발행 단계 실행
