@@ -21,6 +21,7 @@ from upload_pdf import get_service  # noqa: E402
 
 FOLDER_MIME = "application/vnd.google-apps.folder"
 SECRET_HINTS = (".env", "secret", "token", "credential", ".key", ".pem")
+PROGRAM_SUFFIXES = (".py", ".sh")  # scripts/ 안에서 백업할 프로그램 파일 종류
 SOURCE_SUB = "소스"
 WORKFLOW_SUB = "워크플로"
 VERSION_RE = re.compile(r"^P(\d+)$")
@@ -38,8 +39,10 @@ def esc(s: str) -> str:
 def collect(repo_root: Path):
     """(폴더 이름, 로컬 파일 경로) 목록을 돌려준다."""
     items = []
+    # 프로그램 파일만 백업한다. 실행 중에 만들어지는 차트·데이터(png, json, csv 등)는 제외한다.
     for p in sorted((repo_root / "scripts").iterdir()):
-        if p.is_file() and not p.name.startswith(".") and not is_secret_like(p.name):
+        if (p.is_file() and p.suffix in PROGRAM_SUFFIXES and not p.name.startswith(".")
+                and not is_secret_like(p.name)):
             items.append((SOURCE_SUB, p))
     wf_dir = repo_root / ".github" / "workflows"
     if wf_dir.exists():
