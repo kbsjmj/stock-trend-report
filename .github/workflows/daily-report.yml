@@ -2,7 +2,7 @@ name: daily-report
 
 on:
   schedule:
-    - cron: '30 20 * * 0-4'        # KST 월~금 05:30 (UTC 일~목 20:30). 06:28 Claude 예약 전에 데이터를 먼저 만든다. GitHub 예약은 수십 분 지연될 수 있음
+    - cron: '12 21 * * 0-4'        # KST 월~금 06:12 (UTC 일~목 21:12). 미국 마감(06:00 KST) 뒤 보조 실행. 정각·30분은 몰려서 늦으므로 12분으로 둔다. 2026-10-27~11-13 실측: 05:30 예약이 매번 4.3~6.8시간 늦게 시작함. 주 실행은 06:28 Claude 예약이 workflow_dispatch로 직접 한다
   push:
     branches: [main]
     paths: ['narrative/*.json']    # Claude가 1절 원인 문구를 올리면 발행 단계 실행
