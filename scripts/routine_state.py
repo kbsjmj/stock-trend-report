@@ -42,7 +42,8 @@ def main():
 
     now = dt.datetime.strptime(a.now, "%Y-%m-%dT%H:%M").replace(tzinfo=KST) if a.now else dt.datetime.now(KST)
 
-    date, write, prev = run(["python3", "scripts/calc_dates.py", a.date]).split()
+    calc_cmd = ["python3", "scripts/calc_dates.py"] + ([a.date] if a.date else []) + (["--now", a.now] if a.now else [])
+    date, write, prev = run(calc_cmd).split()
     write_d = dt.datetime.strptime(write, "%Y%m%d").date()
     key = f"{date}-w{write}" if write_d.isoweekday() == 1 else date
 
