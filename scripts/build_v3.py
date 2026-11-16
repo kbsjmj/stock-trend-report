@@ -186,7 +186,7 @@ f23_kosdaq = (f23 or {}).get('KOSDAQ') or {'개인': 0, '외국인': 0, '기관'
 us_theme_tbl = ''
 for i, t in enumerate(RD['theme_stats'][:5], 1):
     mem = ', '.join(f'{m["name"]} {m["pct"]:+.2f}%' for _, m in t['top'][:5])
-    us_theme_tbl += f'<tr><td class="c">{i}</td><td class="l nw">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
+    us_theme_tbl += f'<tr><td class="c">{i}</td><td class="l nw">{t["theme"]}</td><td class="l">{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
 
 us_valid = [(t, r) for t, r in US.items() if r]
 us_top_pct = sorted(us_valid, key=lambda x: x[1]['pct'], reverse=True)[:10]
@@ -220,7 +220,7 @@ for _gi, _th in enumerate(_order):
 kr_theme_tbl = ''
 for i, t in enumerate(kr_theme_stats[:5], 1):
     mem = ', '.join(f'{m["name"]} {m["pct"]:+.2f}%' for m in t['top'])
-    kr_theme_tbl += f'<tr><td class="c">{i}</td><td class="l">{t["theme"]}</td><td>{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
+    kr_theme_tbl += f'<tr><td class="c">{i}</td><td class="l">{t["theme"]}</td><td class="l">{pct(t["avg"])}</td><td class="l">{mem}</td></tr>'
 
 # 5-2 국내 연관 테마 및 종목: 미국 5-1 상위 5개 테마와 같은 테마·같은 순위
 # 국내 종목은 테마별 연관 종목 목록이고, 등락률은 RD['kr_rows']의 기준일 값을 쓴다.

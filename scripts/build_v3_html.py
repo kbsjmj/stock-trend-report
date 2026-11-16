@@ -123,7 +123,7 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;5&nbsp;</span>. 미국 주요 관심 종목</h2>
 <h3>5-1. 미국 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
-{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl, W_RANK_THEME)}
+{tbl('<th class="c">순위</th><th class="l">테마</th><th class="l">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl, W_RANK_THEME)}
 <h3>5-2. 국내 연관 테마 및 종목</h3>
 <p class="note">미국 5-1 상위 5개 테마와 같은 테마·같은 순위로 맞췄습니다. 등락률은 {DATE_SLASH} KRX 마감 기준 전일 종가 대비입니다. 값이 없는 종목은 "등락률 미집계"로 표기했습니다.</p>
 {tbl('<th class="c">순위</th><th class="l">테마</th><th class="l">관련 종목</th>', kr_rel_tbl, W_REL)}
@@ -142,7 +142,7 @@ BODY = f'''
 <h2><span class="secnum">&nbsp;6&nbsp;</span>. 국내 주요 관심 종목</h2>
 <h3>6-1. 국내 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
-{tbl('<th class="c">순위</th><th class="l">테마</th><th class="nw">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', kr_theme_tbl, W_RANK_THEME)}
+{tbl('<th class="c">순위</th><th class="l">테마</th><th class="l">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', kr_theme_tbl, W_RANK_THEME)}
 <h3>6-2. 국내 상승률 상위 종목 (전 종목, 거래대금 10억원 이상)</h3>
 <p class="note">거래대금이 너무 작은 종목의 급등을 빼기 위해 10억원 이상 조건을 두었습니다. 외국인·기관 순매수는 투자자별 순매수 거래대금(억원)입니다.</p>
 {tbl('<th class="c">순위</th><th class="l">종목명</th><th>현재가</th><th>등락률</th><th>고가</th><th>시가</th><th>저가</th><th>거래대금(억)</th><th>외국인 순매수(억)</th><th>기관 순매수(억)</th>', kr_pct_tbl, W_RANK_PCT)}
