@@ -59,12 +59,15 @@ if not os.path.exists(_NARR_PATH):
     raise SystemExit(f'narrative 없음: {_NARR_PATH} -- 1절 원인 문구를 먼저 작성해야 발행한다')
 _N = _json.load(open(_NARR_PATH, encoding='utf-8'))
 import re as _re
-_FACTOR1 = _re.compile(r'^((?:상승|하락) 요인 \d+)(?=:)')
+_FACTOR1 = _re.compile(r'^((?:상승|하락) 요인) \d+:\s*')
 def _li(x):
     m = _FACTOR1.match(x)
     if m:
         bg = '#c8372d' if m.group(1).startswith('상승') else '#1f5fd1'
-        return f'<li><span style="background:{bg};color:#ffffff;font-weight:700;padding:0 4px;border-radius:2px">{_html.escape(m.group(1))}</span>{_html.escape(x[m.end():])}</li>'
+        rest = x[m.end():]
+        core, sep, tail = rest.partition(' (')
+        body = f'<b>{_html.escape(core)}</b>' + (_html.escape(sep + tail) if sep else '')
+        return f'<li><span style="background:{bg};color:#ffffff;font-weight:700;padding:0 4px;border-radius:2px">{_html.escape(m.group(1))}</span> {body}</li>'
     return f'<li>{_html.escape(x)}</li>'
 def _ul(items):
     return '<ul>' + ''.join(_li(x) for x in items) + '</ul>'
@@ -109,7 +112,6 @@ BODY = f'''
 <div class="ind">{kr_idx_tbl}</div>
 <h3>4-2. 국내 증시 수급 (순매수 거래대금, 억원, KRX 공식)</h3>
 <div class="ind">{flow_tbl}</div>
-<p class="note">10/22 기사 값(코스피 개인 +3,802·외국인 +614·기관 -4,621)은 KRX 값과 달라 채택하지 않았습니다.</p>
 <h3>4-3. 국내 지수 차트 (일봉, 최근 100거래일)</h3>
 <h3>4-3-1. 코스피</h3>
 <div class="chart">{img("KS11")}</div>
@@ -157,10 +159,10 @@ BODY = f'''
 <li>한국거래소 정보데이터시스템 (지수, 투자자별 수급, 전 종목 시세, 순매수, 관심 종목): <a href="http://data.krx.co.kr">data.krx.co.kr</a>, 조회 도구 pykrx 1.2.9</li>
 <li>Yahoo Finance (미국 지수, 경제지표, 미국 관심 종목, 차트): <a href="https://finance.yahoo.com">finance.yahoo.com</a></li>
 <li>키움증권 REST API (국내 지수 코스피·코스닥 시세·차트, ka20006): KRX 공식 마감치와 일치 확인</li>
-<li>기사 교차 확인: 10/22 마감 지수와 수급은 이전 보고서 출처(서울신문, 포인트데일리, 뉴스핌, 머니투데이, 이투데이, 한국일보) 대조. 10/23 원인은 미국 쪽 데일리안·공감신문·미디어파인·스페셜경제·스페셜타임스·탑스타뉴스(다우 1.23%↓, 미·이란 긴장·유가 급등 7개 매체 일치, 후티·사우디 언급 매체는 없어 정정), 국내 쪽 서울신문·국제뉴스·뉴스핌·전자신문(코스피 0.30%↑ 5550.30, SK하이닉스 +4.42%·솔리다임 IPO 검토 중단 공시) 교차 확인.</li>
+<li>1절 원인 기사: 기준일 기사 확인 결과와 매체 표기는 1절 원인 문구의 괄호에 적었음. 확인하지 못한 요인은 "출처 미확보"로 표기함.</li>
 <li>선물 시세·수급: 미확인 (pykrx 미지원)</li>
 </ul>
-<p class="note">국내 수급·상위 종목·관심 종목은 KRX 정보데이터시스템(pykrx) 공식 자료입니다. 미국 지수·경제지표·관심 종목은 Yahoo Finance 한 곳 값입니다. {DATE_SLASH} 원인은 위처럼 매체 3곳 이상 교차 확인해 반영했습니다(1절 원인 문구는 매번 직접 확인·작성 필요 — 자동 생성 아님). WTI·원/달러는 24시간 거래되는 상품이라 조회 시점에 따라 같은 날짜라도 종가가 조금씩 달라질 수 있습니다.</p>
+<p class="note">국내 수급·상위 종목·관심 종목은 KRX 정보데이터시스템(pykrx) 공식 자료입니다. 미국 지수·경제지표·관심 종목은 Yahoo Finance 한 곳 값입니다. 1절 원인 문구는 기사 확인 결과에 따라 작성했고, 확인하지 못한 요인은 "출처 미확보"로 표기했습니다. WTI·원/달러는 24시간 거래되는 상품이라 조회 시점에 따라 같은 날짜라도 종가가 조금씩 달라질 수 있습니다.</p>
 </div>
 
 <p class="disc">본 보고서는 공개 정보를 요약한 것이며 투자 권유가 아닙니다. 투자 판단과 책임은 본인에게 있습니다.</p>
