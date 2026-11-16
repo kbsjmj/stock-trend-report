@@ -77,12 +77,14 @@ index_rows = {k: row(k, v, idx_df) for k, v in IDX.items()}
 eco_rows = {k: row(k, v, idx_df, 3) for k, v in ECO.items()}
 
 # ---- 2. 캔들차트 (최근 100거래일) ----
-def candle(ticker, title, fname):
+US_CANDLE_H = 2.5 + 1 / 2.54  # 3-2 미국 차트: 기존 2.5인치에서 1cm 높임 (약 2.894인치)
+
+def candle(ticker, title, fname, fig_h=2.5):
     full = idx_df[ticker].dropna()
     rsi = simple_rsi([float(c) for c in full['Close']])[-100:]
     s = full.tail(100)
     title = title.replace('10/23', s.index[-1].strftime('%m/%d'))
-    fig, ax = plt.subplots(figsize=(9.6, 2.5), dpi=140)
+    fig, ax = plt.subplots(figsize=(9.6, fig_h), dpi=140)
     rsi_shade(ax, rsi)
     for i, (dt, r) in enumerate(s.iterrows()):
         o, h, l, c = r['Open'], r['High'], r['Low'], r['Close']
@@ -109,8 +111,8 @@ def candle(ticker, title, fname):
         return base64.b64encode(f.read()).decode()
 
 charts = {
-    'SPX': candle('^GSPC', 'S&P 500 일봉 (최근 100거래일, 10/23 기준)', 'chart_spx'),
-    'IXIC': candle('^IXIC', '나스닥 종합 일봉 (최근 100거래일, 10/23 기준)', 'chart_ixic'),
+    'SPX': candle('^GSPC', 'S&P 500 일봉 (최근 100거래일, 10/23 기준)', 'chart_spx', US_CANDLE_H),
+    'IXIC': candle('^IXIC', '나스닥 종합 일봉 (최근 100거래일, 10/23 기준)', 'chart_ixic', US_CANDLE_H),
     'KS11': candle('^KS11', '코스피 일봉 (최근 100거래일, 10/23 기준)', 'chart_kospi'),
     'KQ11': candle('^KQ11', '코스닥 일봉 (최근 100거래일, 10/23 기준)', 'chart_kosdaq'),
 }
