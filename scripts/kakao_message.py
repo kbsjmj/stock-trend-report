@@ -7,7 +7,7 @@
   # 문구 만들기 (자동 모드면 같은 작성일 기록이 있으면 건너뛴다)
   python3 kakao_message.py text --key KEY --write WRITE --mode auto|command
   # 전송 성공 후 기록 남기기
-  python3 kakao_message.py record --key KEY --write WRITE --version N --link URL
+  python3 kakao_message.py record --key KEY --write WRITE --version N --link URL --confirmed
 
 출력(text): JSON 한 줄 {"send": true|false, "reason": "...", "message": "...", "length": N}
  - mode auto: state/kakao/{WRITE}.json 또는 {WRITE}_*.json이 있으면 send=false.
@@ -89,6 +89,10 @@ def cmd_text(a) -> int:
 
 
 def cmd_record(a) -> int:
+    # 전송 성공이 확인된 뒤에만 기록한다. 확인 없이 기록하면 "전송 완료"가 거짓이 된다(11/15 사고).
+    if not a.confirmed:
+        print("기록 거부: --confirmed 없음. 카톡 전송 성공 응답을 확인한 뒤에만 기록한다.", file=sys.stderr)
+        return 2
     KAKAO_DIR.mkdir(parents=True, exist_ok=True)
     ts = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     path = KAKAO_DIR / f"{a.write}_{ts}.json"
@@ -111,6 +115,7 @@ def main() -> int:
     r.add_argument("--write", required=True)
     r.add_argument("--version", type=int, required=True)
     r.add_argument("--link", required=True)
+    r.add_argument("--confirmed", action="store_true", help="전송 성공 응답을 확인했을 때만 붙인다")
     a = ap.parse_args()
     return cmd_text(a) if a.cmd == "text" else cmd_record(a)
 
