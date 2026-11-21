@@ -121,7 +121,7 @@ BODY = f'''
 
 <div class="keep">
 <h2><span class="secnum">&nbsp;5&nbsp;</span>. 미국 주요 관심 종목</h2>
-<h3>5-1. 미국 상승률 상위 테마 (5개, 관련 종목 5개)</h3>
+<h3>5-1. 미국 등락률 상위 테마 (5개, 관련 종목 5개)</h3>
 <p class="note">테마 평균 등락률은 테마에 속한 관심 종목의 단순 평균입니다.</p>
 {tbl('<th class="c">순위</th><th class="l">테마</th><th class="l">평균 등락률</th><th class="l">관련 종목 (상위 5)</th>', us_theme_tbl, W_RANK_THEME)}
 <h3>5-2. 국내 연관 테마 및 종목</h3>
