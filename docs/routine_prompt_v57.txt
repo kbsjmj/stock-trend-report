@@ -25,12 +25,13 @@
 - STALE_NARRATIVE: 자동 처리하지 않는다. F로 간다.
 
 4. narrative 작성 (state 가 NEED_NARRATIVE 일 때만)
+  - 보고서 원고는 반드시 stock-trend-report-format 스킬을 불러 그 규칙(1절 원인 문구, 3절 형식)에 맞춰 쓴다. 스킬을 쓰지 않은 원고는 push하지 않는다. 쓴 뒤 스킬 8절 점검을 한다.
   - 입력: data/report_data_DATE.json. 숫자는 이 파일 값과 정확히 같아야 한다. 형식은 narrative/20261112.json 을 본다: {"us": [...], "kr": [...]}, HTML 태그 금지.
-  - 기사 검색은 서로 다른 검색어로 4회 이상, 매체 3곳 이상. 기사 날짜가 기준일(date)과 맞는지 본다. 요인 항목마다 끝에 (매체명)을 괄호로 붙인다.
+  - 기사 검색은 서로 다른 검색어로 6회 이상, 매체 3곳 이상. 검색어에 기준일 날짜(예: '2026년 11월 20일')와 영문 키워드(예: 'Nasdaq November 20 2026', 'chip stocks selloff')를 섞고, 2025년 등 다른 해 기사는 쓰지 않는다. 기사 날짜가 기준일(date)과 맞는지 본다. 요인 항목마다 끝에 (매체명)을 괄호로 붙인다.
   - 기사 원문을 열지 못했으면 ※ 항목에 "원문 열람은 확인하지 못했다"고 쓴다.
   - 매체마다 수치가 다르면(예: 외국인 수급) 본문에 그 수치를 쓰지 않고 ※ 항목에 차이를 적는다.
   - 기준일 시장을 설명하는 기사를 찾지 못한 요인은 '(출처 미확보, 지수 흐름 기준)'으로 쓴다. 추측으로 원인을 지어내지 않는다.
-  - 저장 후: git add narrative/KEY.json; git -c user.name=kbsjmj -c user.email=101155105+kbsjmj@users.noreply.github.com commit -m "narrative: DATE 기준 1절 원인 문구 (작성 WRITE)"; git push origin HEAD:main. push 가 실패하면 add_repo 도구가 있으면 owner=kbsjmj, repo=stock-trend-report, access=push 로 호출하고 한 번 더 시도한다. 이 push 가 발행을 자동으로 시작한다.
+  - push 가 실패하면 한 번 더 시도하고, 그래도 실패하면 실패로 보고한다. 이 push 가 발행을 자동으로 시작한다.
 
 6. 카톡 1회 (state 가 NEED_KAKAO 일 때만)
   - 도구 출력의 kakao_message 를 그대로 쓴다(수정 금지). 길이 200자 이하인지 확인한다.
