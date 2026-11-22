@@ -64,7 +64,7 @@ def build_text(key: str, write: str, rec: dict) -> str:
     for label, name in [("코스피", "코스피"), ("코스닥", "코스닥")]:
         v = index_value(dt_key, name)
         kr.append(f"{label} {v['close']:,.0f} {signed(v['pct'])}" if v else f"{label} 집계 없음")
-    head = f"[증시추세분석(클라우드) ({write})]"  # 제목은 작성일(보고서 파일 이름과 같은 날짜)
+    head = f"[증시추세분석-클라우드 ({write})]"  # 제목은 작성일(보고서 파일 이름과 같은 날짜)
     return f"{head} {us} / {' '.join(kr)} {link}"
 
 
@@ -76,7 +76,7 @@ def cmd_text(a) -> int:
             return 0
     rec = latest_published(a.key)
     if rec is None:
-        head = f"[증시추세분석(클라우드) ({write})]"
+        head = f"[증시추세분석-클라우드 ({write})]"
         msg = f"{head} 발행 기록 없음, 확인 필요"
     else:
         msg = build_text(a.key, write, rec)
