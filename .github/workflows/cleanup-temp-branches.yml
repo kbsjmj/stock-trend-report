@@ -1,0 +1,38 @@
+name: cleanup-temp-branches
+
+# 예약 루틴 실행 세션이 만드는 임시 브랜치(main-xxxx, claude/...)를 정리한다.
+# main에 완전히 병합된 것만 삭제한다. main에 없는 커밋이 있는 브랜치는 건드리지 않는다.
+on:
+  schedule:
+    - cron: '0 3 * * *'   # 매일 UTC 03:00 = KST 12:00
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cleanup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: main에 병합된 임시 브랜치 삭제
+        run: |
+          git fetch --prune origin
+          for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin); do
+            b="${ref#origin/}"
+            case "$b" in
+              HEAD|main) continue ;;
+              main-*|claude/*) ;;
+              *) continue ;;
+            esac
+            if git merge-base --is-ancestor "origin/$b" origin/main; then
+              echo "삭제: $b (main에 병합됨)"
+              git push origin --delete "$b" || echo "삭제 실패: $b"
+            else
+              echo "건너뜀: $b (main에 없는 커밋 있음)"
+            fi
+          done
