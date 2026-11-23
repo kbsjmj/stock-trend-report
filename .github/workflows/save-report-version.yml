@@ -16,7 +16,7 @@ on:
         description: '상태 버전 번호 (state 키)'
         required: true
       title:
-        description: 'Drive 제목 (비우면 증시추세분석 (작성일)-vN.pdf)'
+        description: 'Drive 제목 (비우면 증시추세분석-클라우드 (작성일)-vN.pdf)'
         required: false
         default: ''
 

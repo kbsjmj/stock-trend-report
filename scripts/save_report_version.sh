@@ -7,7 +7,7 @@ ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 SRC="$1"; DATE="$2"; WRITE="$3"; VER="$4"; TITLE="${5:-}"
 case "$SRC" in *.pdf) ;; *) echo "PDF 파일만 받는다: $SRC"; exit 1 ;; esac
 [ -f "$ROOT/reports/$SRC" ] || { echo "reports/에 없음: $SRC"; exit 1; }
-PDF_NAME="${TITLE:-증시추세분석 (${WRITE})-v${VER}.pdf}"
+PDF_NAME="${TITLE:-증시추세분석-클라우드 (${WRITE})-v${VER}.pdf}"
 case "$PDF_NAME" in *.pdf) ;; *) echo "제목은 .pdf로 끝나야 함: $PDF_NAME"; exit 1 ;; esac
 if [ "$SRC" != "$PDF_NAME" ]; then cp "$ROOT/reports/$SRC" "$ROOT/reports/$PDF_NAME"; fi
 

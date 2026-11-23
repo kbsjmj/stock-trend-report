@@ -61,7 +61,7 @@ python3 build_v3_html.py "$WRITE" "$DATE" "$PREV"
 HTML="증시추세분석-${WRITE}-v2.html"
 
 echo "[4/5] PDF 변환 (v${VER})"
-PDF_NAME="증시추세분석 (${WRITE})_v${VER}.pdf"
+PDF_NAME="증시추세분석-클라우드 (${WRITE})-v${VER}.pdf"
 "${CHROME_BIN:-google-chrome}" --headless=new --no-sandbox --disable-gpu \
   --no-pdf-header-footer --print-to-pdf="$ROOT/out/$PDF_NAME" \
   "file://$(pwd)/$HTML"
