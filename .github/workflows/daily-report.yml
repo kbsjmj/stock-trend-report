@@ -1,8 +1,8 @@
 name: daily-report
 
 on:
-  schedule:
-    - cron: '12 21 * * 0-4'        # KST 월~금 06:12 (UTC 일~목 21:12). 미국 마감(06:00 KST) 뒤 보조 실행. 정각·30분은 몰려서 늦으므로 12분으로 둔다. 2026-10-27~11-13 실측: 05:30 예약이 매번 4.3~6.8시간 늦게 시작함. 주 실행은 06:28 Claude 예약이 workflow_dispatch로 직접 한다
+  # 예약(cron) 실행은 끈다. 깃허브 예약은 4~7시간 늦게 돌아 다른 실행과 겹쳤고, 그 충돌이 실패의 원인이었다.
+  # 예약 실행은 클라우드 루틴(증시추세분석(클라우드), 06:28 KST)이 workflow_dispatch로 직접 시작한다.
   push:
     branches: [main]
     paths: ['narrative/*.json']    # Claude가 1절 원인 문구를 올리면 발행 단계 실행
@@ -42,7 +42,13 @@ jobs:
           cache-dependency-path: requirements.txt
 
       - name: 한글 폰트 설치
-        run: sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum
+        # 설치 서버 접속이 일시적으로 실패하는 일이 있어(2026-11-11) 세 번까지 재시도한다.
+        run: |
+          for i in 1 2 3; do
+            if sudo apt-get update -qq && sudo apt-get install -y -qq fonts-nanum; then exit 0; fi
+            echo "폰트 설치 $i회 실패, 30초 뒤 재시도"; sleep 30
+          done
+          exit 1
 
       - name: Python 패키지 설치
         run: pip install -r requirements.txt
@@ -90,6 +96,7 @@ jobs:
 
       - name: 지침·컨텍스트·실행방법 Drive 업로드 (최신 버전, 같은 이름은 건너뜀)
         if: always()
+        continue-on-error: true   # 부가 백업이라 실패해도 보고서 결과를 막지 않는다
         env:
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: |
@@ -97,6 +104,7 @@ jobs:
 
       - name: 프로그램 백업 (드라이브 버전 폴더 P#, 내용이 바뀐 경우만)
         if: always()
+        continue-on-error: true   # 일부 파일 실패(2026-11-12 "실패 4개")가 전체 실패로 보이지 않게 한다
         env:
           GDRIVE_FOLDER_ID: ${{ secrets.GDRIVE_FOLDER_ID }}
         run: |
@@ -111,8 +119,17 @@ jobs:
           git add data state reports
           if ! git diff --cached --quiet; then
             git commit -m "chore: daily report state [skip ci]"
-            git pull --rebase --autostash
-            git push
+            # 다른 실행이 먼저 올렸으면 그 위에 다시 얹는다(2026-11-09·10 충돌 실패 대책).
+            # 충돌은 이번 실행의 생성물(data·state·reports)을 우선한다.
+            for i in 1 2 3 4 5; do
+              git fetch -q origin "$GITHUB_REF_NAME"
+              if git rebase -q -X theirs "origin/$GITHUB_REF_NAME" && git push -q origin "HEAD:$GITHUB_REF_NAME"; then
+                echo "상태 저장 성공 (${i}회차)"; exit 0
+              fi
+              git rebase --abort 2>/dev/null || true
+              echo "상태 저장 실패 (${i}회차), 잠시 뒤 재시도"; sleep $((i * 10))
+            done
+            echo "상태 저장 최종 실패"; exit 1
           else
             echo "커밋할 변경 없음"
           fi
