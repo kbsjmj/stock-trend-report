@@ -28,6 +28,19 @@ from zoneinfo import ZoneInfo
 KST = ZoneInfo("Asia/Seoul")
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CLOSE_BUFFER = dt.time(6, 5)  # 미국 정규장 마감(겨울 06:00, 여름 05:00 KST) 뒤 5분 여유(겨울 기준으로 보수적)
+# 미국 주식시장(NYSE) 휴장일. 휴장일이 기준일이면 미국 지수의 마지막 거래일은 그보다 앞선다.
+# 2027년 휴장일은 연초에 추가한다. 목록에 없는 휴장일은 기존처럼 NEED_DATA로 막힌다.
+US_HOLIDAYS = {
+    "2026-01-01", "2026-01-19", "2026-02-16", "2026-04-03", "2026-05-25",
+    "2026-06-19", "2026-07-03", "2026-09-07", "2026-11-26", "2026-12-25",
+}
+
+
+def us_last_trading_day(d):
+    """기준일 d 이전(포함)의 마지막 미국 거래일. 주말·휴장일을 건너뛴다."""
+    while d.weekday() >= 5 or d.isoformat() in US_HOLIDAYS:
+        d -= dt.timedelta(days=1)
+    return d
 
 
 def run(cmd):
@@ -66,7 +79,7 @@ def main():
         try:
             idx = json.load(open(full, encoding="utf-8")).get("index_rows", {})
             us_dates = {v.get("date") for k, v in idx.items() if k in ("S&P 500", "나스닥 종합", "다우존스")}
-            want = f"{date[:4]}-{date[4:6]}-{date[6:]}"
+            want = us_last_trading_day(dt.datetime.strptime(date, "%Y%m%d").date()).isoformat()
             ts = run(["git", "log", "-1", "--format=%cI", "--", data_path])
             made = dt.datetime.fromisoformat(ts).astimezone(KST) if ts else None
             if us_dates != {want}:
